@@ -8,12 +8,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/login.css">
 </head>
 
 <body>
     <div id="center_box">
-        <form action="/login" method="GET">
+        <form id="login_form" action="/login" method="GET">
             <label for="email_input_field">Email: </label>
             <br>
             <input type="text" class="input_field" id="email_input_field" name="email">
@@ -27,6 +27,8 @@
             </div>
         </form>
     </div>
+    <script type="module" src="scripts/login.js"></script>
+
 </body>
 
 </html>

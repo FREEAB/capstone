@@ -1,3 +1,8 @@
+/*
+Start of Bamieh's Code
+*/
+
+/* Making sure everything in the body will be centered and that the body will take up the whole viewport */
 body {
     display: flex;
     justify-content: center;
@@ -7,6 +12,7 @@ body {
     overflow: hidden;
 }
 
+/* Similar to body, I'm making sure everything is centered in the center box and that it takes up a good amount of space */
 #center_box {
     display: flex;
     justify-content: center;
@@ -17,6 +23,7 @@ body {
     border-radius: 5rem;
 }
 
+/* Stretching out the input field and making it look nice */
 .input_field {
     width: 20rem;
     height: 1.4rem;
@@ -27,12 +34,14 @@ body {
     background-color: #D9D9D9;
 }
 
+/* Enclosed the button in a div to make it centered */
 .button_div {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+/* Making the button look like our figma mock-ups */
 .button {
     width: 7rem;
     height: 1.4rem;
@@ -42,7 +51,12 @@ body {
     border-radius: 0.5rem;
 }
 
+/* Making button reactive */
 .button:hover {
     background-color: #2657D9;
     cursor: pointer;
 }
+
+/* 
+End of Bamieh's code 
+*/
