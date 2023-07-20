@@ -7,12 +7,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World!</title>
+    <title>Login</title>
+    <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
-
-    <h1>Hello World!</h1>
+    <div id="center_box">
+        <form action="/login" method="GET">
+            <label for="email_input_field">Email: </label>
+            <br>
+            <input type="text" class="input_field" id="email_input_field" name="email">
+            <br>
+            <label for="password_input_field">Password: </label>
+            <br>
+            <input type="password" class="input_field" id="password_input_field" name="password">
+            <br>
+            <div class="button_div">
+                <button class="button" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
 </body>
 
 </html>
