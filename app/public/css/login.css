@@ -1,62 +1,34 @@
-/*
-Start of Bamieh's Code
-*/
+/* Start of Gronemeier's code */
 
-/* Making sure everything in the body will be centered and that the body will take up the whole viewport */
 body {
-    display: flex;
-    justify-content: center;
+    background-color: rgb(56, 1, 86);
+}
+
+.white_square {
+    width: 500px;
+    height: 500px;
+    margin: 100px auto;
     align-items: center;
-    background-color: #130B25;
-    height: 100vh;
-    overflow: hidden;
+    color: #ffffff;
+    background-color: rgb(255, 255, 255);
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Similar to body, I'm making sure everything is centered in the center box and that it takes up a good amount of space */
-#center_box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: white;
-    width: 30vh;
-    height: 30vh;
-    border-radius: 5rem;
+.username_box {
+    /* rounded username box */
+    width: 300px;
+    height: 50px;
+    margin: 0 auto;
+    margin-top: 50px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    border: 1px solid rgb(56, 1, 86);
+
 }
 
-/* Stretching out the input field and making it look nice */
-.input_field {
-    width: 20rem;
-    height: 1.4rem;
-    margin-top: 0.1rem;
-    margin-bottom: 0.5rem;
-    border: none;
-    border-radius: 0.5rem;
-    background-color: #D9D9D9;
-}
-
-/* Enclosed the button in a div to make it centered */
-.button_div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Making the button look like our figma mock-ups */
-.button {
-    width: 7rem;
-    height: 1.4rem;
-    background-color: #1F45AD;
-    color: white;
-    border: none;
-    border-radius: 0.5rem;
-}
-
-/* Making button reactive */
-.button:hover {
-    background-color: #2657D9;
-    cursor: pointer;
-}
-
-/* 
-End of Bamieh's code 
-*/
+/* End of Gronemeier's code */
