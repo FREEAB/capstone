@@ -41,7 +41,7 @@ async function getUsers() {
  */
 async function getUserByID(id) {
     try {
-        const results = await pool.query(`SELECT * FROM user_data WHERE uid = ${id};`);
+        const results = await pool.query(`SELECT * FROM user_data WHERE id = ${id};`);
         return results.rows;
     } catch (error) {
         throw error;

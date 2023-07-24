@@ -1,6 +1,9 @@
 /* Start of Bamieh's Code */
 const jwt = require('jsonwebtoken');
 
+// Requiring dotenv for secret keys
+require('dotenv').config();
+
 /** 
  * Middleware to authenticate token
  * @param {Request} req - This parameter represents the request object.
@@ -18,7 +21,7 @@ const authenticateToken = (req, res, next) => {
     }
 
     // Verifying token is accurate and then extracting payload to pass onto next request
-    jwt.verify(token, process.env.SECRET, (err, payload) => {
+    jwt.verify(token, process.env.secret, (err, payload) => {
         if (err) {
             return res.redirect("/");
         }
