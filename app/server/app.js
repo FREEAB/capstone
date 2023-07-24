@@ -12,6 +12,17 @@ const passwordTools = require('./scripts/passwordTools');
 //Setting express's view engine to process ejs vs standard HTML allowing dynamic templating
 app.set('view engine', 'ejs');
 
+// Database Connection object 
+const db = require('./database/database.js')
+//carrasco's code
+//HTTP request methods
+app.get('/users', db.getUsers)
+app.get('/users/:id', db.getUserById)
+app.post('/create', db.createUser)
+app.post('/put', db.updateUser)
+app.delete('/users/:id', db.deleteUser)
+//Carrasco's code
+
 //Setting middleware
 app.set('views', path.join(__dirname, "..", 'views')); //This allows express to look for views in the /views folder
 app.use(express.json());
@@ -27,6 +38,16 @@ app.get("/login", async (req, res) => {
     res.render("login");
 });
 
+//defining route to update user 
+app.get("/put", async (req, res) => {
+    res.render("put");
+});
+
+//defining route to create user
+app.get("/create", async (req, res) => {
+    res.render("create");
+});
+
 //Handling login
 app.post('/login', async (req, res) => {
     console.log(req.body);
@@ -34,6 +55,8 @@ app.post('/login', async (req, res) => {
     console.log(email, password);
     return res.status(200);
 })
+
+
 
 //Defining route for incoming requests without a path thats been defined in one of the above routes
 app.get("/*", async (req, res) => {
