@@ -1,14 +1,21 @@
-//Start of Bamieh's Code
+/* Start of Bamieh's Code */
 
+// Grab login_form element
 const loginForm = document.getElementById('login_form');
+
+// Creating event listener for login_form submission
 loginForm.addEventListener('submit', async (event) => {
+
+    // Prevent default form submission behavior
     event.preventDefault();
 
+    // Grab email and password values from form elements
     const email = loginForm.elements['email'].value;
     const password = loginForm.elements['password'].value;
-    console.log(email, password);
 
     try {
+
+        // Send POST request to /login and send email/password as JSON in body
         const response = await fetch('/login', {
             method: 'POST',
             headers: {
@@ -16,9 +23,10 @@ loginForm.addEventListener('submit', async (event) => {
             },
             body: JSON.stringify({ email, password }),
         });
+
+        // If response is OK then redirect to dashboard else alert user about invalid credentials
         if (response.ok) {
-            console.log("It worked.")
-            // window.location.href = '/dashboard';
+            window.location.href = '/dashboard';
         } else {
             alert("Invalid credentials. Try again.");
         }
@@ -27,4 +35,4 @@ loginForm.addEventListener('submit', async (event) => {
     };
 });
 
-//End of Bamieh's Code
+/* End of Bamieh's Code */

@@ -1,71 +1,81 @@
-//Start of Bamieh's Code
-//Importing necessary libraries
+/* Start of Bamieh's Code */
+
+// Importing express and creating app object
 const express = require('express');
 const app = express();
-const bcrypt = require('bcrypt');
-const path = require('path');
-const uuid = require('uuid');
-const cookieParser = require('cookie-parser');
-const dummyData = require('./scripts/dummyDatabase');
-const passwordTools = require('./scripts/passwordTools');
 
-//Setting express's view engine to process ejs vs standard HTML allowing dynamic templating
+// Importing necessary libraries
+const path = require('path');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+const middleware = require('./middleware/authenticator');
+
+// Setting express's view engine to process ejs vs standard HTML allowing dynamic templating
 app.set('view engine', 'ejs');
 
-// Database Connection object 
-const db = require('./database/database.js')
-//carrasco's code
-//HTTP request methods
-app.get('/users', db.getUsers)
-app.get('/users/:id', db.getUserById)
-app.post('/create', db.createUser)
-app.post('/put', db.updateUser)
-app.delete('/users/:id', db.deleteUser)
-//Carrasco's code
+// Database model connection object 
+const db = require('./models/user_model.js');
 
-//Setting middleware
-app.set('views', path.join(__dirname, "..", 'views')); //This allows express to look for views in the /views folder
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "..", '/public'))); //This allows express to look for static (CSS, JS, Images, etc.) files in the /public folder
+// Setting middleware
+app.set('views', path.join(__dirname, "..", 'views')); // This allows express to look for views in the /views folder
+app.use(express.json()); // This allows express to process json sent through response objects
+app.use(express.static(path.join(__dirname, "..", '/public'))); // This allows express to look for static (CSS, JS, Images, etc.) files in the /public folder
+app.use(cookieParser()); // This allows express to process cookies through the request objects
 
-//Defining first route for incoming requests with no path in the URL
+// Defining route for login page
 app.get("/", async (req, res) => {
-    res.redirect("/login");
-});
-
-//Defining route for login
-app.get("/login", async (req, res) => {
     res.render("login");
 });
 
-//defining route to update user 
-app.get("/put", async (req, res) => {
-    res.render("put");
-});
-
-//defining route to create user
-app.get("/create", async (req, res) => {
-    res.render("create");
-});
-
-//Handling login
+// Handling login attempts 
 app.post('/login', async (req, res) => {
-    console.log(req.body);
-    const { email, password } = req.body;
-    console.log(email, password);
-    return res.status(200);
+    try {
+
+        // Using destructuring assignment to pull email and password off of req.body
+        const { email, password } = req.body;
+
+        // Try to find a user using the email put in
+        const user = await db.getUserByEmail(email);
+
+        if (user) {
+            // If there is a user for the email then get their hashed password and compare it to the input password
+            const hashedPassword = user[0].password;
+            const passwordValid = await bcrypt.compare(password, hashedPassword);
+            console.log(passwordValid);
+
+            if (passwordValid) {
+
+                // Create an object with user's uid and email
+                const payload = { id: user[0].uid, email: user[0].email };
+
+                // Sign the payload above with secret key, store it in 'auth' cookie and return successful login
+                const token = jwt.sign(payload, process.env.SECRET);
+                res.cookie('auth', token, { httpOnly: true, maxAge: 3600000 }); // This cookie will be httpOnly and have a maxAge of 1 hour (ms)
+                return res.status(200).json({ message: "Login Successful." });
+            }
+        }
+        // Catch errors going on in server
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+    // If program makes it here then the credentials were invalid
+    res.status(401).json({ message: "Invalid Credentials" });
+});
+
+//Defining protected route for dashboard
+app.get("/dashboard", middleware.authenticateToken, async (req, res) => {
+    res.render("dashboard");
 })
 
-
-
-//Defining route for incoming requests without a path thats been defined in one of the above routes
+// Defining route for incoming requests without valid path
 app.get("/*", async (req, res) => {
     res.render("404");
 });
 
-//Starts listening for incoming requests after everything (middleware, routes, settiings) has been setup and defined
+// Starts listening for incoming requests after everything (middleware, routes, settiings) has been setup and defined
 app.listen(3000, () => {
     console.log('Server listening on localhost:3000');
 });
 
-//End of Bamieh's Code
+/* End of Bamieh's Code */

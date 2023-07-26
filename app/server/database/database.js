@@ -1,49 +1,62 @@
 //carrasco's code
 //Databse connection odject
-const Pool = require('pg').Pool
+const Pool = require('pg').Pool;
+const passwordTools = require('../scripts/passwordTools');
+
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'Capstone',
-    password: 'Nene3443',
-    port: 3000,
+    database: 'capstone',
+    password: 'transfer25',
+    port: 5432,
 })
 pool.connect(function (err) {
     if (err) throw err;
-    console.log(" Database Connected!");
+    console.log("Database Connected!");
 });
+
 //Function to get all users
-const getUsers = (req, res) => {
-    pool.query('SELECT * FROM user_table ORDER BY user_id', (error, results) => {
-        if (error) {
-            throw error
-        }
-        res.status(200).json(results.rows)
-    })
-}
+async function getUsers() {
+    try {
+        const results = await pool.query("SELECT * FROM user_data;");
+        return results.rows;
+    } catch (error) {
+        throw error;
+    }
+};
 
-//Function to get single user by id
-const getUserById = (req, res) => {
-    const id = parseInt(req.params.id)
+//Function to get user by ID
+async function getUserByID(id) {
+    try {
+        const results = await pool.query(`SELECT * FROM user_data WHERE uid = ${id};`);
+        return results.rows;
+    } catch (error) {
+        throw error;
+    }
+};
 
-    pool.query('SELECT * FROM user_table WHERE user_id = $1', [id], (error, results) => {
-        if (error) {
-            throw error
-        }
-        res.status(200).json(results.rows)
-    })
-}
+//Function to get user by email
+async function getUserByEmail(email) {
+    try {
+        const results = await pool.query(`SELECT * FROM user_data WHERE email = '${email}';`);
+        return results.rows;
+    } catch (error) {
+        throw error;
+    }
+};
 
 //Function to add a new user
 const createUser = (req, res) => {
-    const { name, email, password } = req.body
+    const { name, email, password } = req.body;
 
-    pool.query('INSERT INTO user_table (name, email, password) VALUES ($1, $2, $3) RETURNING *', [name, email, password], (error, results) => {
-        if (error) {
-            throw error
-        }
-        res.status(201).send(`User added with ID: ${results.rows[0].id}`)
-    })
+    const hashedPassword =
+
+        pool.query('INSERT INTO user_table (name, email, password) VALUES ($1, $2, $3) RETURNING *', [name, email, password], (error, results) => {
+            if (error) {
+                throw error
+            }
+            res.status(201).send(`User added with ID: ${results.rows[0].id}`)
+        })
 }
 //Function to update data in an existing user
 const updateUser = (req, res) => {
@@ -75,7 +88,8 @@ const deleteUser = (req, res) => {
 
 module.exports = {
     getUsers,
-    getUserById,
+    getUserByID,
+    getUserByEmail,
     createUser,
     updateUser,
     deleteUser,
