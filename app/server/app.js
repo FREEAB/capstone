@@ -42,7 +42,6 @@ app.post('/login', async (req, res) => {
             // If there is a user for the email then get their hashed password and compare it to the input password
             const hashedPassword = user[0].password;
             const passwordValid = await bcrypt.compare(password, hashedPassword);
-            console.log(passwordValid);
 
             if (passwordValid) {
 
