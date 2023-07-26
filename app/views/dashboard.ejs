@@ -37,12 +37,12 @@
         </div>
     </nav>
     <div class="table-responsive m-3">
-        <table class="table table-dark" style="">
+        <table class="table table-dark">
             <thead>
                 <tr>
                     <th>User ID</th>
                     <% for (var i=1; i < 15; i++) { %>
-                        <th>Day <%=i%>
+                        <th id="day_<%=i%>_header">Day <%=i%>
                         </th>
                         <% } %>
                 </tr>
@@ -52,8 +52,8 @@
                         <td>
                             <%= user.id %>
                         </td>
-                        <% for (var i=1; i < 15; i++) { %>
-                            <td>
+                        <% for (var j=1; j < 15; j++) { %>
+                            <td id="<%=user.id%>_day_<%=j%>">
                                 <!-- select dropdown menu -->
                                 <select class="form-select" aria-label="Default select example">
                                     <option selected>Location</option>
@@ -64,26 +64,13 @@
                                     <option value="5">Sick</option>
                                     <option value="6">Holiday</option>
                             </td>
-
                             <% } %>
                     </tr>
                     <% } %>
-
-
-
             </thead>
-
-
         </table>
     </div>
-
-
-
-
-
-
 </body>
-
 
 </html>
 <!-- end gronemeier code -->
