@@ -76,21 +76,30 @@ app.post("/create", async (req, res) => {
     try {
 
         //Using destructuring assignment to pull first_name, last_name, email, password, and role
-        const { email, password, first_name, last_name, role } = req.body;
-        console.log(email, password, first_name, last_name, role);
+        const { firstName, lastName, email, password, secretKey, role } = req.body;
 
-        //inserting data into databse
-        const createdUser = await db.createUser(email, password, first_name, last_name, role);
-        console.log(createdUser);
-        if (createdUser) {
+        // Validate secret key for chosen role
+
+
+        // Inserting data into databse
+        const creationResult = await db.createUser(email, password, firstName, lastName, role);
+
+        // Getting ID from new user
+        const newUser = await db.getUserByEmail(email);
+        const newUserID = newUser.id;
+
+        if (creationResult.rowCount) {
 
             //Create an object with user's id and email
-            const payload = { id, email };
+            const payload = { id: newUserID, email: email };
+
             // Sign the payload above with secret key, store it in 'auth' cookie and return successful registration
             const token = jwt.sign(payload, process.env.secret);
             res.cookie('auth', token, { httpOnly: true, maxAge: 3600000 }); // This cookie will be httpOnly and have a maxAge of 1 hour (ms)
             return res.status(200).json({ message: "Registration Successful." });
 
+        } else {
+            return res.status(500).json({ message: "Database error" });
         }
 
     }

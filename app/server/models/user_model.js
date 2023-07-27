@@ -1,7 +1,7 @@
 /* Start of Bamieh's Code */
 
 const Pool = require('pg').Pool;
-const bycrpt = require('bcrypt');
+const bcrypt = require('bcrypt');
 
 // Defining constants
 const saltRounds = 10;
@@ -75,10 +75,13 @@ async function createUser(email, password, first_name, last_name, role) {
     try {
 
         // Password should be in plain text so hash it and then insert it along with everything else
-        const hashed_password = bcrypt.hash(password, saltRounds);
-        const results = await pool.query(`INSERT INTO user_data (email, hashed_password, first_name, last_name) VALUES (${email},${hashed_password},${first_name},${last_name},${role})`);
+        const hashed_password = await bcrypt.hash(password, saltRounds);
+        const results = await pool.query(`INSERT INTO user_data (email, hashed_password, first_name, last_name, role_id) VALUES ('${email}','${hashed_password}','${first_name}','${last_name}',${role})`);
+
+        console.log("user was created");
         return results;
     } catch (error) {
+        console.log("Error was thrown in user_Model.createUser");
         throw error;
     }
 };
