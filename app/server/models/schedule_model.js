@@ -136,3 +136,5 @@ async function deleteScheduleEntries(user_id) {
         throw error;
     }
 }
+
+/* End of Bamieh's Code */

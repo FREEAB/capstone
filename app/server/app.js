@@ -28,6 +28,22 @@ app.get("/", async (req, res) => {
     res.render("login");
 });
 
+//Defining protected route for dashboard
+app.get("/dashboard", middleware.authenticateToken, async (req, res) => {
+    res.render("dashboard");
+});
+
+// Defining route for incoming requests without valid path
+app.get("/*", async (req, res) => {
+    res.render("404");
+});
+
+//Defining route for incoming /create requests
+app.get("/create", async (req, res) => {
+    res.render("create");
+});
+
+
 // Handling login attempts 
 app.post('/login', async (req, res) => {
     try {
@@ -60,14 +76,32 @@ app.post('/login', async (req, res) => {
     res.status(401).json({ message: "Invalid Credentials" });
 });
 
-//Defining protected route for dashboard
-app.get("/dashboard", middleware.authenticateToken, async (req, res) => {
-    res.render("dashboard");
-})
+//Handeling registering attempts
+app.post("/create", async (req, res) => {
+    try {
 
-// Defining route for incoming requests without valid path
-app.get("/*", async (req, res) => {
-    res.render("404");
+        //Using destructuring assignment to pull first_name, last_name, email, password, and role
+        const { email, password, first_name, last_name, role } = req.body
+
+        //inserting data into databse
+        const createdUser = await db.createUser(email, password, first_name, last_name, role)
+        if (createdUser) {
+
+            //Create an object with user's id and email
+            const payload = { id: createdUser.id, email: createdUser.email };
+            // Sign the payload above with secret key, store it in 'auth' cookie and return successful registration
+            const token = jwt.sign(payload, process.env.secret);
+            res.cookie('auth', token, { httpOnly: true, maxAge: 3600000 }); // This cookie will be httpOnly and have a maxAge of 1 hour (ms)
+            return res.status(200).json({ message: "Registration Successful." });
+
+        }
+
+    }
+    // Catch errors going on in server
+    catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+
 });
 
 // Starts listening for incoming requests after everything (middleware, routes, settiings) has been setup and defined
