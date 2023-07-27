@@ -39,12 +39,12 @@ app.post('/login', async (req, res) => {
         const user = await db.getUserByEmail(email);
         if (user) {
             // If there is a user for the email then get their hashed password and compare it to the input password
-            const hashedPassword = user[0].hashed_password;
+            const hashedPassword = user.hashed_password;
             const passwordValid = await bcrypt.compare(password, hashedPassword);
             if (passwordValid) {
 
                 // Create an object with user's id and email
-                const payload = { id: user[0].id, email: user[0].email };
+                const payload = { id: user.id, email: user.email };
 
                 // Sign the payload above with secret key, store it in 'auth' cookie and return successful login
                 const token = jwt.sign(payload, process.env.secret);
