@@ -33,11 +33,6 @@ app.get("/dashboard", middleware.authenticateToken, async (req, res) => {
     res.render("dashboard");
 });
 
-// Defining route for incoming requests without valid path
-app.get("/*", async (req, res) => {
-    res.render("404");
-});
-
 //Defining route for incoming /create requests
 app.get("/create", async (req, res) => {
     res.render("create");
@@ -81,14 +76,16 @@ app.post("/create", async (req, res) => {
     try {
 
         //Using destructuring assignment to pull first_name, last_name, email, password, and role
-        const { email, password, first_name, last_name, role } = req.body
+        const { email, password, first_name, last_name, role } = req.body;
+        console.log(email, password, first_name, last_name, role);
 
         //inserting data into databse
-        const createdUser = await db.createUser(email, password, first_name, last_name, role)
+        const createdUser = await db.createUser(email, password, first_name, last_name, role);
+        console.log(createdUser);
         if (createdUser) {
 
             //Create an object with user's id and email
-            const payload = { id: createdUser.id, email: createdUser.email };
+            const payload = { id, email };
             // Sign the payload above with secret key, store it in 'auth' cookie and return successful registration
             const token = jwt.sign(payload, process.env.secret);
             res.cookie('auth', token, { httpOnly: true, maxAge: 3600000 }); // This cookie will be httpOnly and have a maxAge of 1 hour (ms)
@@ -102,6 +99,11 @@ app.post("/create", async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 
+});
+
+// Defining route for incoming requests without valid path
+app.get("/*", async (req, res) => {
+    res.render("404");
 });
 
 // Starts listening for incoming requests after everything (middleware, routes, settiings) has been setup and defined
