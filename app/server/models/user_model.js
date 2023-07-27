@@ -73,6 +73,8 @@ async function getUserByEmail(email) {
  */
 async function createUser(email, password, first_name, last_name, role) {
     try {
+
+        // Password should be in plain text so hash it and then insert it along with everything else
         const hashed_password = bcrypt.hash(password, saltRounds);
         const results = await pool.query(`INSERT INTO user_data (email, hashed_password, first_name, last_name) VALUES (${email},${hashed_password},${first_name},${last_name},${role})`);
         return results;
@@ -93,20 +95,28 @@ async function createUser(email, password, first_name, last_name, role) {
  */
 async function updateUser(id, email = null, password = null, first_name = null, last_name = null, role = null) {
     try {
+
+        // Try to find the user by their ID and if they don't exist then throw an error
         const user = getUserByID(id);
         if (!user) {
             throw error;
         }
+
+        // If these parameters null (Something wasn't input for them) then set them equal to their current values by using the 'user' object
         if (!email) { email = user.email }
         if (!first_name) { first_name = user.first_name }
         if (!last_name) { last_name = user.last_name }
         if (!role) { role = user.role }
+
+        // If anything for password is input, then hash it
         if (password) {
             const hashed_password = bcrypt.hash(password, saltRounds);
+            // If nothing input for password, then set it equal to the current hashed_password value for the user
         } else {
             const hashed_password = user.hashed_password;
         }
 
+        // Update all the values with the values we got
         const results = await pool.query(`UPDATE user_data SET email = ${email}, hashed_password = ${hashed_password}, first_name = ${first_name}, last_name = ${last_name}, role = ${role} WHERE id = ${id};`);
         return results;
     } catch (error) {
