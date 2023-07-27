@@ -77,7 +77,6 @@ app.post("/create", async (req, res) => {
 
         //Using destructuring assignment to pull first_name, last_name, email, password, and role
         const { firstName, lastName, email, password, secretKey, role } = req.body;
-
         // Validate secret key for chosen role
 
 
