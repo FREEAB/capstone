@@ -15,7 +15,7 @@ const middleware = require('./middleware/authenticator');
 app.set('view engine', 'ejs');
 
 // Database model connection object 
-const db = require('./models/user_model.js');
+// const db = require('./models/user_model.js');
 
 // Setting middleware
 app.set('views', path.join(__dirname, "..", 'views')); // This allows express to look for views in the /views folder
@@ -28,9 +28,27 @@ app.get("/", async (req, res) => {
     res.render("login");
 });
 
+const datab = { // This is a temporary database for testing purposes
+    users: [
+        {
+            id: 1,
+            email: "test@test.gov",
+            password: "test",
+            role: "admin"
+        },
+        {
+            id: 2,
+            email: "test2@test,gov",
+            password: "test2",
+            role: "member"
+        }
+    ]
+}
+
+
 //Defining protected route for dashboard
-app.get("/dashboard", middleware.authenticateToken, async (req, res) => {
-    res.render("dashboard");
+app.get("/dashboard", async (req, res) => {
+    res.render("dashboard", datab);
 });
 
 //Defining route for incoming /create requests
