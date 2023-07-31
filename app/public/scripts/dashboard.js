@@ -1,3 +1,7 @@
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
 function addDays(date, days) {
     const dateCopy = new Date(date);
     dateCopy.setDate(date.getDate() + days);
@@ -5,10 +9,9 @@ function addDays(date, days) {
 }
 
 function getFullDate(date) {
-    let year = date.getFullYear();
-    let month = date.getMonth();
+    let month = date.getMonth()+1;
     let day = date.getDate();
-    return (String(month) + "-" + String(day) + "-" + String(year));
+    return (String(month) + "-" + String(day));
 }
 
 for (i = 1; i < 15; i++) {
