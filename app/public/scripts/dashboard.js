@@ -1,6 +1,6 @@
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
+// const monthNames = ["January", "February", "March", "April", "May", "June",
+//   "July", "August", "September", "October", "November", "December"
+// ];
 
 function addDays(date, days) {
     const dateCopy = new Date(date);
@@ -9,14 +9,36 @@ function addDays(date, days) {
 }
 
 function getFullDate(date) {
-    let month = date.getMonth()+1;
+    let dayName = date.toLocaleString('default', { weekday: 'long' });
+    let month = date.toLocaleString('default', { month: 'long' });
     let day = date.getDate();
-    return (String(month) + "-" + String(day));
+    return (String(dayName) + " " + String(day) + " " + String(month));
 }
 
-for (i = 1; i < 15; i++) {
+// for (i = 0; i < 14; i++) {
+//     let dateElement = document.querySelector("#day_" + String(i) + "_header");
+//     const dateObj = new Date();
+//     dateElement.innerHTML = getFullDate(addDays(dateObj, i - 1));
+// }
+
+const dateObj = new Date();
+
+const dayOfWeek = dateObj.getDay();
+
+const offset = 0 - dayOfWeek;
+
+
+for (i = 0; i < 14; i++) {
     let dateElement = document.querySelector("#day_" + String(i) + "_header");
-    const dateObj = new Date();
-    dateElement.innerHTML = getFullDate(addDays(dateObj, i - 1));
-}
+    let newDate = addDays(dateObj, i + offset);
+    let newDateDay = newDate.getDay();
+    dateElement.innerHTML = getFullDate(newDate);
 
+    if (newDateDay == 0 || newDateDay == 6) {
+        let weekendElements = document.querySelectorAll(".day_" + String(i));
+        weekendElements.forEach(element => {
+            element.setAttribute("disabled", true);
+            element.style.backgroundColor = "#d7d7d7";
+        })
+    }
+}
