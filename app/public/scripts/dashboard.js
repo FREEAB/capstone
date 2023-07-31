@@ -24,6 +24,7 @@ const dayOfWeek = dateObj.getDay();
 const offset = 0 - dayOfWeek;
 
 
+
 for (i = 0; i < 14; i++) {
     let dateElement = document.querySelector("#day_" + String(i) + "_header");
     let newDate = addDays(dateObj, i + offset);
@@ -35,10 +36,11 @@ for (i = 0; i < 14; i++) {
         weekendElements.forEach(element => {
             element.setAttribute("disabled", true);
             element.style.backgroundColor = "#d7d7d7";
-        })
+            })
     }
 }
 
+// start gronemeier code
 // if role is member let them only edit their names row
 function checkRole() {
     let role = document.querySelector("#role").innerHTML;
@@ -50,4 +52,16 @@ function checkRole() {
         })
     }
 }
+// if role is admin let them see and edit everyone
+function checkRoleAdmin() {
+    let role = document.querySelector("#role").innerHTML;
+    if (role == "admin") {
+        let nameElements = document.querySelectorAll(".name");
+        nameElements.forEach(element => {
+            element.removeAttribute("disabled");
+            element.style.backgroundColor = "white";
+        })
+    }
+}
 
+// end Gronemeier code
