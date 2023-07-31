@@ -74,3 +74,7 @@ function checkRoleAdmin() {
 }
 
 // end Gronemeier code
+
+/* Start of Bamieh's code */
+
+/* End of Bamieh's code */

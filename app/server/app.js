@@ -15,7 +15,11 @@ const middleware = require('./middleware/authenticator');
 app.set('view engine', 'ejs');
 
 // Database model connection object 
-const db = require('./models/user_model.js');
+const user_database = require('./models/user_model.js');
+const schedule_database = require('./models/schedule_model.js');
+
+// Dates module
+const date_functions = require('./dates.js');
 
 // Setting middleware
 app.set('views', path.join(__dirname, "..", 'views')); // This allows express to look for views in the /views folder
@@ -30,8 +34,18 @@ app.get("/", async (req, res) => {
 
 //Defining protected route for dashboard
 app.get("/dashboard", async (req, res) => {
-    user_data = await db.getUsers();
-    res.render("dashboard", { members: user_data });
+    user_data = await user_database.getUsers();
+
+    // Get dates for most recent sunday to 2 weeks after
+    let today = new Date();
+    let offset = -today.getDay();
+
+    // Getting start and end date to pass into schedule query
+    let start_date = date_functions.addDays(today, offset);
+    let end_date = date_functions.addDays(start_date, 14);
+
+    schedule_data = await schedule_database.getScheduleBetweenDates(start_date, end_date);
+    res.render("dashboard", { members: user_data, schedule: schedule_data });
 });
 
 //Defining route for incoming /create requests
