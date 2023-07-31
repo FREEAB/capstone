@@ -32,15 +32,27 @@ const datab = { // This is a temporary database for testing purposes
     users: [
         {
             id: 1,
+            firstName: "test",
+            lastName: "Snuffy",
             email: "test@test.gov",
             password: "test",
             role: "admin"
         },
         {
             id: 2,
+            firstName: "test2",
+            lastName: "Smith",
             email: "test2@test,gov",
             password: "test2",
             role: "member"
+        },
+        {
+            id: 3,
+            firstName: "test3",
+            lastName: "Doe",
+            email: "test3@test,gov",
+            password: "test3",
+            role: "supervisor"
         }
     ]
 }
