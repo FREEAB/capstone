@@ -65,7 +65,7 @@ app.get("/dashboard", async (req, res) => {
 
 //Defining route for incoming /create requests
 app.get("/create", async (req, res) => {
-    res.render("create");
+    res.render("create", datab);
 });
 
 
