@@ -16,6 +16,7 @@ app.set('view engine', 'ejs');
 
 // Database model connection object 
 const db = require('./models/user_model.js');
+const { adminAuthenticateToken } = require('./middleware/adminAuthenticator');
 
 // Setting middleware
 app.set('views', path.join(__dirname, "..", 'views')); // This allows express to look for views in the /views folder
@@ -34,7 +35,7 @@ app.get("/dashboard", middleware.authenticateToken, async (req, res) => {
 });
 
 //Defining route for incoming /create requests
-app.get("/create", async (req, res) => {
+app.get("/create",adminAuthenticateToken, async (req, res) => {
     res.render("create");
 });
 
@@ -55,7 +56,7 @@ app.post('/login', async (req, res) => {
             if (passwordValid) {
 
                 // Create an object with user's id and email
-                const payload = { id: user.id, email: user.email };
+                const payload = { id: user.id, email: user.email, role: user.role };
 
                 // Sign the payload above with secret key, store it in 'auth' cookie and return successful login
                 const token = jwt.sign(payload, process.env.secret);
@@ -68,10 +69,11 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
     // If program makes it here then the credentials were invalid
-    res.status(401).json({ message: "Invalid Credentials" });
+    res.status(401).json({ message: "Invali]]d Credentials" });
 });
 
 //Handeling registering attempts
+
 app.post("/create", async (req, res) => {
     try {
 
