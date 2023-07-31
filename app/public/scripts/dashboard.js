@@ -48,3 +48,29 @@ for (i = 0; i < 14; i++) {
 }
 
 /* End of Bamieh's Code */
+
+// start gronemeier code
+// if role is member let them only edit their names row
+function checkRole() {
+    let role = document.querySelector("#role").innerHTML;
+    if (role == "member") {
+        let nameElements = document.querySelectorAll(".name");
+        nameElements.forEach(element => {
+            element.setAttribute("disabled", true);
+            element.style.backgroundColor = "#d7d7d7";
+        })
+    }
+}
+// if role is admin let them see and edit everyone
+function checkRoleAdmin() {
+    let role = document.querySelector("#role").innerHTML;
+    if (role == "admin") {
+        let nameElements = document.querySelectorAll(".name");
+        nameElements.forEach(element => {
+            element.removeAttribute("disabled");
+            element.style.backgroundColor = "white";
+        })
+    }
+}
+
+// end Gronemeier code
