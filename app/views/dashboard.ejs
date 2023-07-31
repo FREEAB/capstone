@@ -51,13 +51,13 @@
                 </tr>
 
 
-                <% for (let user of users ) { %>
+                <% for (let member of members ) { %>
                     <tr>
                         <td>
-                            <%= user.lastName %>
+                            <%= member.last_name %>
                         </td>
                         <% for (var j=0; j < 14; j++) { %>
-                            <td id="<%=user.id%>_day_<%=j%>" style="padding: 1px; width: 6.66%">
+                            <td id="<%=member.id%>_day_<%=j%>" style="padding: 1px; width: 6.66%">
                                 <!-- select dropdown menu -->
                                 <select class="form-select dropcolors day_<%=j%>" aria-label="Select">
                                     <option selected></option>
