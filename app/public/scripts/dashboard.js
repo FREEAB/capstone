@@ -1,7 +1,3 @@
-// const monthNames = ["January", "February", "March", "April", "May", "June",
-//   "July", "August", "September", "October", "November", "December"
-// ];
-
 function addDays(date, days) {
     const dateCopy = new Date(date);
     dateCopy.setDate(date.getDate() + days);
@@ -42,3 +38,16 @@ for (i = 0; i < 14; i++) {
         })
     }
 }
+
+// if role is member let them only edit their names row
+function checkRole() {
+    let role = document.querySelector("#role").innerHTML;
+    if (role == "member") {
+        let nameElements = document.querySelectorAll(".name");
+        nameElements.forEach(element => {
+            element.setAttribute("disabled", true);
+            element.style.backgroundColor = "#d7d7d7";
+        })
+    }
+}
+
