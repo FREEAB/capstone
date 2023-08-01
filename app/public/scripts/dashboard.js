@@ -64,4 +64,16 @@ function checkRoleAdmin() {
     }
 }
 
+// if role is supervisor let them edit theirs and their troops dropdowns
+function checkRoleSupervisor() {
+    let role = document.querySelector("#role").innerHTML;
+    if (role == "supervisor") {
+        let nameElements = document.querySelectorAll(".name");
+        nameElements.forEach(element => {
+            element.removeAttribute("disabled");
+            element.style.backgroundColor = "white";
+        })
+    }
+}
+
 // end Gronemeier code
