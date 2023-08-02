@@ -125,6 +125,21 @@ app.post("/create", async (req, res) => {
 
 });
 
+//route for api getting schedule
+app.get("/api/schedule", async (req, res) => {
+    // Getting start and end date to pass into schedule query
+    // Get dates for most recent sunday to 2 weeks after
+    let today = new Date();
+    let offset = -today.getDay();
+
+    let start_date = date_functions.addDays(today, offset);
+    let end_date = date_functions.addDays(start_date, 14);
+    console.log('test');
+
+    scheduleData = await schedule_database.getScheduleBetweenDates(start_date, end_date);
+    res.json(scheduleData);
+});
+
 // Defining route for incoming requests without valid path
 app.get("/*", async (req, res) => {
     res.render("404");

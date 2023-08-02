@@ -36,7 +36,7 @@ for (i = 0; i < 14; i++) {
     dateElement.innerHTML = getFullDate(newDate);
 
     /* Figure out what day the header is on and if it is a 0 (Sunday) or 6 (Saturday) 
-    then grey out all corresponding boxes */
+    then grey out/disable all corresponding boxes */
     let newDateDay = newDate.getDay();
     if (newDateDay == 0 || newDateDay == 6) {
         let weekendElements = document.querySelectorAll(".day_" + String(i));
@@ -51,30 +51,61 @@ for (i = 0; i < 14; i++) {
 
 // start gronemeier code
 // if role is member let them only edit their names row
-function checkRole() {
-    let role = document.querySelector("#role").innerHTML;
-    if (role == "member") {
-        let nameElements = document.querySelectorAll(".name");
-        nameElements.forEach(element => {
-            element.setAttribute("disabled", true);
-            element.style.backgroundColor = "#d7d7d7";
-        })
-    }
-}
-// if role is admin let them see and edit everyone
-function checkRoleAdmin() {
-    let role = document.querySelector("#role").innerHTML;
-    if (role == "admin") {
-        let nameElements = document.querySelectorAll(".name");
-        nameElements.forEach(element => {
-            element.removeAttribute("disabled");
-            element.style.backgroundColor = "white";
-        })
-    }
-}
+// function checkRole() {
+//     let role = document.querySelector("#role").innerHTML;
+//     if (role == "member") {
+//         let nameElements = document.querySelectorAll(".name");
+//         nameElements.forEach(element => {
+//             element.setAttribute("disabled", true);
+//             element.style.backgroundColor = "#d7d7d7";
+//         })
+//     }
+// }
+// // if role is admin let them see and edit everyone
+// function checkRoleAdmin() {
+//     let role = document.querySelector("#role").innerHTML;
+//     if (role == "admin") {
+//         let nameElements = document.querySelectorAll(".name");
+//         nameElements.forEach(element => {
+//             element.removeAttribute("disabled");
+//             element.style.backgroundColor = "white";
+//         })
+//     }
+// }
 
+// ^^ Can't have this code verifying roles client side. Not secure. - Bamieh
 // end Gronemeier code
 
 /* Start of Bamieh's code */
+const getScheduleData = async () => {
+    try {
 
+        // Send POST request to /login and send email/password as JSON in body
+        const response = await fetch('/api/schedule', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        // If response is OK then redirect to dashboard else alert user about invalid credentials
+        if (response.ok) {
+            return await response.json();
+        } else {
+            alert("Error getting schedule data. Try again.");
+        }
+    } catch (error) {
+        console.error("There was an error fetching dashboard data: ", error);
+    }
+};
+
+function populateScheduleData(scheduleData) {
+    scheduleData.forEach((dataPoint) => {
+        console.log(dataPoint);
+    });
+}
+
+getScheduleData()
+    .then((schedule_data) => {
+        populateScheduleData(schedule_data);
+    });
 /* End of Bamieh's code */
