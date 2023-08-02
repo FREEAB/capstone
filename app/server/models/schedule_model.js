@@ -84,7 +84,12 @@ async function getScheduleAfterDate(user_id, date) {
  */
 async function getScheduleBetweenDates(start_date, end_date) {
     try {
-        const results = await pool.query(`SELECT * FROM schedule WHERE date >= '${convertDate(start_date)}' AND date <= '${convertDate(end_date)}';`);
+        const results = await pool.query(`SELECT last_name, schedule.date, location_id
+        FROM schedule
+        JOIN user_data
+        ON schedule.user_id = user_data.id
+        WHERE date > '${convertDate(start_date)}'
+        AND date <= '${convertDate(end_date)}';`);
         return results.rows;
     } catch (error) {
         throw error;

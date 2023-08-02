@@ -57,9 +57,10 @@
                             <%= member.last_name %>
                         </td>
                         <% for (var j=0; j < 14; j++) { %>
-                            <td id="<%=member.id%>_day_<%=j%>" style="padding: 1px; width: 6.66%">
+                            <td id="<%=member.last_name%>_day_<%=j%>" style="padding: 1px; width: 6.66%">
                                 <!-- select dropdown menu -->
-                                <select class="form-select dropcolors day_<%=j%>" aria-label="Select">
+                                <select id="<%=member.last_name%>_day_<%=j%>_dropdown" class="form-select dropcolors"
+                                    aria-label="Select">
                                     <option selected></option>
                                     <option value="1">H2O</option>
                                     <option value="2">ShOC</option>
@@ -71,38 +72,7 @@
                             <% } %>
                     </tr>
                     <% } %>
-                    <!-- stores info from dropdown to locations table in pgAdmin database -->
-                    <script>
-                        const dropdownss = document.querySelectorAll('.dropcolors')
-                        dropdownss.forEach((dropdown) => {
-                            dropdown.addEventListener('change', (event) => {
-                                // get id of dropdown
-                                const id = event.target.id;
-                                // get value of dropdown
-                                const value = event.target.value;
-                                // get day of dropdown
-                                const day = id.split("_")[2];
-                                // get user id of dropdown
-                                const user_id = id.split("_")[0];
-                                // send data to server
-                                fetch('/dashboard', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({
-                                        user_id: user_id,
-                                        day: day,
-                                        value: value
-                                    })
-                                }).then((response) => {
-                                    return response.json();
-                                }).then((data) => {
-                                    console.log(data);
-                                });
-                            });
-                        });
-                    </script>
+                        <!-- stores info from dropdown to locations table in pgAdmin database -->
             </thead>
         </table>
     </div>
