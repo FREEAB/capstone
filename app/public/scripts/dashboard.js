@@ -34,7 +34,7 @@ for (i = 0; i < 14; i++) {
     if (newDateDay == 0 || newDateDay == 6) {
         let weekendElements = document.querySelectorAll(".day_" + String(i));
         weekendElements.forEach(element => {
-            element.setAttribute("disabled", true);
+            element.setAttribute("enabled", true);
             element.style.backgroundColor = "#d7d7d7";
             })
     }
@@ -75,5 +75,7 @@ function checkRoleSupervisor() {
         })
     }
 }
+
+
 
 // end Gronemeier code
