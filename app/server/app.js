@@ -1,4 +1,4 @@
-/* Start of Bamieh's Code */
+/* Start of Bamieh's Code (/create route made my Carrasco) */
 
 // Importing express and creating app object
 const express = require('express');
@@ -15,11 +15,8 @@ const middleware = require('./middleware/authenticator');
 app.set('view engine', 'ejs');
 
 // Database model connection object 
-const user_database = require('./models/user_model.js');
-const schedule_database = require('./models/schedule_model.js');
-
-// Dates module
-const date_functions = require('./dates.js');
+const userDatabase = require('./models/user_model.js');
+const scheduleDatabase = require('./models/schedule_model.js');
 
 // Setting middleware
 app.set('views', path.join(__dirname, "..", 'views')); // This allows express to look for views in the /views folder
@@ -34,7 +31,7 @@ app.get("/", async (req, res) => {
 
 //Defining protected route for dashboard
 app.get("/dashboard", async (req, res) => {
-    user_data = await user_database.getUsers();
+    user_data = await userDatabase.getUsers();
 
     // Get dates for most recent sunday to 2 weeks after
     let today = new Date();
@@ -44,7 +41,7 @@ app.get("/dashboard", async (req, res) => {
     let start_date = date_functions.addDays(today, offset);
     let end_date = date_functions.addDays(start_date, 14);
 
-    schedule_data = await schedule_database.getScheduleBetweenDates(start_date, end_date);
+    schedule_data = await scheduleDatabase.getScheduleBetweenDates(start_date, end_date);
     res.render("dashboard", { members: user_data, schedule: schedule_data });
 });
 
@@ -53,8 +50,7 @@ app.get("/create", async (req, res) => {
     res.render("create", datab);
 });
 
-
-// Handling login attempts 
+// Defining route to validate login attempt
 app.post('/login', async (req, res) => {
     try {
 
@@ -62,7 +58,7 @@ app.post('/login', async (req, res) => {
         const { email, password } = req.body;
 
         // Try to find a user using the email put in
-        const user = await db.getUserByEmail(email);
+        const user = await userDatabase.getUserByEmail(email);
         if (user) {
             // If there is a user for the email then get their hashed password and compare it to the input password
             const hashedPassword = user.hashed_password;
@@ -97,10 +93,10 @@ app.post("/create", async (req, res) => {
 
 
         // Inserting data into databse
-        const creationResult = await db.createUser(email, password, firstName, lastName, role);
+        const creationResult = await userDatabase.createUser(email, password, firstName, lastName, role);
 
         // Getting ID from new user
-        const newUser = await db.getUserByEmail(email);
+        const newUser = await userDatabase.getUserByEmail(email);
         const newUserID = newUser.id;
 
         if (creationResult.rowCount) {
@@ -125,19 +121,24 @@ app.post("/create", async (req, res) => {
 
 });
 
-//route for api getting schedule
+// Defining route to get schedule data
 app.get("/api/schedule", async (req, res) => {
-    // Getting start and end date to pass into schedule query
-    // Get dates for most recent sunday to 2 weeks after
+
+    // Will return 2 weeks of schedule data backdated to most recent Sunday
     let today = new Date();
     let offset = -today.getDay();
-
     let start_date = date_functions.addDays(today, offset);
     let end_date = date_functions.addDays(start_date, 14);
-    console.log('test');
-
-    scheduleData = await schedule_database.getScheduleBetweenDates(start_date, end_date);
+    scheduleData = await scheduleDatabase.getScheduleBetweenDates(start_date, end_date);
     res.json(scheduleData);
+});
+
+// Defining route to save schedule to database
+app.post("/api/schedule", async (req, res) => {
+    const { user_id, date, location_id } = req.body;
+    console.log(user_id, date, location_id);
+    const results = await scheduleDatabase.createSchedule(user_id, date, location_id);
+    res.status(200).json({ message: "Schedule was saved!" });
 });
 
 // Defining route for incoming requests without valid path
@@ -145,7 +146,7 @@ app.get("/*", async (req, res) => {
     res.render("404");
 });
 
-// Starts listening for incoming requests after everything (middleware, routes, settiings) has been setup and defined
+// Starts listening for incoming requests after everything (middleware, routes, settings) has been setup and defined
 app.listen(3000, () => {
     console.log('Server listening on localhost:3000');
 });

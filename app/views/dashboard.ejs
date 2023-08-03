@@ -57,11 +57,11 @@
                             <%= member.last_name %>
                         </td>
                         <% for (var j=0; j < 14; j++) { %>
-                            <td id="<%=member.last_name%>_day_<%=j%>" style="padding: 1px; width: 6.66%">
+                            <td id="<%=member.id%>_day_<%=j%>" style="padding: 1px; width: 6.66%">
                                 <!-- select dropdown menu -->
-                                <select id="<%=member.last_name%>_day_<%=j%>_dropdown" class="form-select dropcolors"
-                                    aria-label="Select">
-                                    <option selected></option>
+                                <select id="<%=member.id%>_day_<%=j%>_dropdown"
+                                    class="form-select dropcolors day_<%=j%>" aria-label="Select">
+                                    <option value="0" selected></option>
                                     <option value="1">H2O</option>
                                     <option value="2">ShOC</option>
                                     <option value="3">Telework</option>
@@ -72,42 +72,10 @@
                             <% } %>
                     </tr>
                     <% } %>
-                        <!-- stores info from dropdown to locations table in pgAdmin database -->
             </thead>
         </table>
     </div>
-
-
-
-
-
-
     <script src="scripts/dashboard.js"></script>
-    <script>
-        // function to change color of dropdown menu
-        const dropdowns = document.querySelectorAll('.dropcolors')
-        dropdowns.forEach((dropdown) => {
-            dropdown.addEventListener('change', (event) => {
-                // change background color depending on what item selected in dropdown
-                if (event.target.value == 1) {
-                    event.target.style.backgroundColor = "rgb(135, 206, 235)";
-                } else if (event.target.value == 2) {
-                    event.target.style.backgroundColor = "rgb(237, 221, 119)";
-                } else if (event.target.value == 3) {
-                    event.target.style.backgroundColor = "rgb(227, 143, 242)";
-                } else if (event.target.value == 4) {
-                    event.target.style.backgroundColor = "rgb(237,100,100)";
-                } else if (event.target.value == 5) {
-                    event.target.style.backgroundColor = "rgb(59,163,92)";
-                } else if (event.target.value == 6) {
-                    event.target.style.backgroundColor = "rgb(227,133,61)";
-                } else {
-                    event.target.style.backgroundColor = "white";
-                }
-            });
-        });
-    </script>
 </body>
-
 </html>
 <!-- end gronemeier code -->

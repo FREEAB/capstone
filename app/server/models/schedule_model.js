@@ -40,7 +40,7 @@ function convertDate(date) {
  */
 async function createSchedule(user_id, date, location_id) {
     try {
-        const results = pool.query(`INSERT INTO schedule (user_id, date, location_id) VALUES (${user_id}, ${convertDate(date)}, ${location_id});`);
+        const results = pool.query(`INSERT INTO schedule (user_id, date, location_id) VALUES (${user_id}, '${date}', ${location_id});`);
         return results;
     } catch (error) {
         throw error;
@@ -84,10 +84,8 @@ async function getScheduleAfterDate(user_id, date) {
  */
 async function getScheduleBetweenDates(start_date, end_date) {
     try {
-        const results = await pool.query(`SELECT last_name, schedule.date, location_id
+        const results = await pool.query(`SELECT user_id, schedule.date, location_id
         FROM schedule
-        JOIN user_data
-        ON schedule.user_id = user_data.id
         WHERE date > '${convertDate(start_date)}'
         AND date <= '${convertDate(end_date)}';`);
         return results.rows;

@@ -1,4 +1,4 @@
-/* Start of Bamieh's Code (Lines were edited by Gronemeier for front-end compatibility) */
+/* Start of Bamieh's Code ( Color mappings were chosen by Gronemeier ) */
 
 /**
  * @param {Date} date - Date object for date that you want to add from
@@ -65,14 +65,11 @@ async function getScheduleData() {
 */
 function populateScheduleData(scheduleData) {
     scheduleData.forEach((entry) => {
-        const entry_name = entry.last_name;
+        const entry_id = entry.user_id;
         const entry_date = entry.date.substring(0, 10);
-        const entry_day = dayMappings[entry_date];
+        // const entry_day = dayMappings[entry_date];
         const entry_location = entry.location_id;
-        // console.log(dayMappings);
-        // console.log(entry_name, entry_date, entry_location);
-        // console.log();
-        element = document.querySelector(`#${entry_name}_day_${entry_day}_dropdown`);
+        element = document.querySelector(`#dropdown_${entry_id}_${entry_date}`);
         if (element) {
             element.selectedIndex = entry_location;
             element.dispatchEvent(new Event('change'));
@@ -83,64 +80,92 @@ function populateScheduleData(scheduleData) {
 
 // Defining necessary variables
 const dateObj = new Date();
-const dayOfWeek = dateObj.getDay();
-const offset = 0 - dayOfWeek;
-const dayMappings = {};
+const dayOfWeek = dateObj.getDay(); // Day of week 0 = Sunday | 6 = Saturday
+const offset = -dayOfWeek; // This number tells you how many days till most recent sunday
+const dayMappings = {}; // Used to translate day 1-14 of the calendar to actual dates
+var isInitialPopulation = true; // Used to avoid duplication of data
+const colorMappings = {
+    "0": "rgb(255,255,255)",
+    "1": "rgb(135,206,235)",
+    "2": "rgb(237,221,119)",
+    "3": "rgb(227,143,242)",
+    "4": "rgb(237,100,100)",
+    "5": "rgb(59, 163, 92)",
+    "6": "rgb(227,133, 61)"
+};
 
-// Loop through all day headers
+// Loop through all days (1-14) on calendar to set proper headers and disable weekends
 for (let i = 0; i < 14; i++) {
 
-    // Grab all date_header elements and populate them with proper dates
+    // Grab all day_x_header elements and populate them with proper dates (x refers to day 0-14)
     let dateElement = document.querySelector("#day_" + String(i) + "_header");
-    let newDate = addDays(dateObj, i + offset);
-    // dateElement.id = `${getNumericDate(newDate)}_header`;
-    dateElement.innerHTML = getFullDate(newDate);
-    dayMappings[getNumericDate(newDate)] = i;
 
-    /* Figure out what day the header is on and if it is a 0 (Sunday) or 6 (Saturday) 
-    then grey out/disable all corresponding boxes */
+    // This will return a new date object using offset var which on i=0 will return the most recent sunday
+    let newDate = addDays(dateObj, i + offset);
+
+    // Setting proper headers and assigning proper day-date mappings to dayMappings
+    dateElement.innerHTML = getFullDate(newDate);
+    dayMappings[i] = getNumericDate(newDate);
+
+    // Disable & gray out dropdowns if day of week is 0 (Sun) or 6 (Sat)
     let newDateDay = newDate.getDay();
     if (newDateDay == 0 || newDateDay == 6) {
         let weekendElements = document.querySelectorAll(".day_" + String(i));
         weekendElements.forEach(element => {
-            element.setAttribute("disabled", true); // Disable button
-            element.style.backgroundColor = "#d7d7d7"; // Set it to grey
+            element.setAttribute("disabled", true); // Disable dropdown
+            element.style.backgroundColor = "#d7d7d7"; // Set it to gray
         })
     }
 }
 
+// Retrieves Schedule data from database and then populates all appropriate dropdowns
 getScheduleData()
     .then((schedule_data) => {
         populateScheduleData(schedule_data);
+        isInitialPopulation = false; // Sets this to false so any further changes will be saved in db
     });
 
-// const dropdowns = document.querySelectorAll('.dropcolors')
-// dropdowns.forEach((dropdown) => {
-//     dropdown.addEventListener('change', (event) => {
-//         // get id of dropdown
-//         const id = event.target.id;
-//         // get value of dropdown
-//         const value = event.target.value;
-//         // get day of dropdown
-//         const day = id.split("_")[2];
-//         // get user id of dropdown
-//         const user_name = id.split("_")[0];
-//         // send data to server
-//         fetch('/dashboard', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({
-//                 user_id: user_id,
-//                 day: day,
-//                 value: value
-//             })
-//         }).then((response) => {
-//             return response.json();
-//         }).then((data) => {
-//             console.log(data);
-//         });
-//     });
-// });
+// Loop through every dropdown
+const dropdowns = document.querySelectorAll('.dropcolors');
+dropdowns.forEach((dropdown) => {
+
+    // Converts dropdown IDs from 'X_dropdown_Y' to 'dropdown_X_YYYY-MM-DD
+    let dropdownID = dropdown.id.split("_")[0];
+    let dropdownDay = dropdown.id.split("_")[2];
+    let dropdownDate = dayMappings[dropdownDay];
+    dropdown.id = `dropdown_${dropdownID}_${dropdownDate}`;
+
+    // Make event listener for changes to change colors and save changes to db
+    dropdown.addEventListener('change', (event) => {
+        const dropdownValue = event.target.value;
+        event.target.style.backgroundColor = colorMappings[dropdownValue];
+
+        // If this isn't the initial population then save to db
+        if (!isInitialPopulation) {
+            const dropdownID = event.target.id.split("_")[1];
+            const dropdownDate = event.target.id.split("_")[2];
+            const dropdownValue = event.target.value;
+
+            // Simple POST request to /api/schedule with user_id, date, location_id in body
+            fetch('/api/schedule', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: dropdownID,
+                    date: dropdownDate,
+                    location_id: dropdownValue
+                })
+            }).then((response) => {
+                if (response.ok) {
+                    console.log("Change was saved");
+                } else {
+                    console.error(response);
+                }
+                return response.json();
+            })
+        }
+    });
+});
 /* End of Bamieh's code */
