@@ -73,7 +73,6 @@ function populateScheduleData(scheduleData) {
         if (element) {
             element.selectedIndex = entry_location;
             element.dispatchEvent(new Event('change'));
-            console.log('it worked');
         }
     });
 }

@@ -1,7 +1,7 @@
 /* Start of Bamieh's Code */
 
 // Grab login_form element
-const createForm = document.getElementById('create_form');
+const createForm = document.querySelector('#create_form');
 
 // Creating event listener for create_form submission
 createForm.addEventListener('submit', async (event) => {
@@ -14,7 +14,6 @@ createForm.addEventListener('submit', async (event) => {
     const lastName = createForm.elements['last_name'].value;
     const email = createForm.elements['email'].value;
     const password = createForm.elements['password'].value;
-    const secretKey = createForm.elements['secret_key'].value;
     const role = createForm.elements['role'].value;
 
     try {
@@ -25,14 +24,15 @@ createForm.addEventListener('submit', async (event) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ firstName, lastName, email, password, secretKey, role }),
+            body: JSON.stringify({ firstName, lastName, email, password, role }),
         });
 
         // If response is OK then redirect to dashboard else alert user about invalid credentials
+        console.log(response.json());
         if (response.ok) {
             window.location.href = '/dashboard';
         } else {
-            alert("Invalid key.");
+            alert("There was an error");
         }
     } catch (error) {
         console.error("There was an error registering: ", error);

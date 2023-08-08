@@ -9,7 +9,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
-const middleware = require('./middleware/authenticator');
+const { authenticateToken, authenticateSupervisor, authenticateAdministrator } = require('./middleware/authenticator');
 const date_functions = require('./dates.js');
 
 // Setting express's view engine to process ejs vs standard HTML allowing dynamic templating
@@ -31,7 +31,7 @@ app.get("/", async (req, res) => {
 });
 
 //Defining protected route for dashboard
-app.get("/dashboard", async (req, res) => {
+app.get("/dashboard", authenticateToken, async (req, res) => {
     user_data = await userDatabase.getUsers();
 
     // Get dates for most recent sunday to 2 weeks after
@@ -47,8 +47,8 @@ app.get("/dashboard", async (req, res) => {
 });
 
 //Defining route for incoming /create requests
-app.get("/create", async (req, res) => {
-    res.render("create", datab);
+app.get("/create", authenticateAdministrator, async (req, res) => {
+    res.render("create");
 });
 
 // Defining route to validate login attempt
@@ -67,7 +67,7 @@ app.post('/login', async (req, res) => {
             if (passwordValid) {
 
                 // Create an object with user's id and email
-                const payload = { id: user.id, email: user.email };
+                const payload = { id: user.id, role: user.role_id };
 
                 // Sign the payload above with secret key, store it in 'auth' cookie and return successful login
                 const token = jwt.sign(payload, process.env.secret);
@@ -83,47 +83,30 @@ app.post('/login', async (req, res) => {
     res.status(401).json({ message: "Invalid Credentials" });
 });
 
-//Handeling registering attempts
-app.post("/create", async (req, res) => {
+//Handling registering attempts
+app.post("/create", authenticateAdministrator, async (req, res) => {
     try {
-
         //Using destructuring assignment to pull first_name, last_name, email, password, and role
-        const { firstName, lastName, email, password, secretKey, role } = req.body;
-
-        // Validate secret key for chosen role
-
+        const { firstName, lastName, email, password, role } = req.body;
 
         // Inserting data into databse
         const creationResult = await userDatabase.createUser(email, password, firstName, lastName, role);
 
-        // Getting ID from new user
-        const newUser = await userDatabase.getUserByEmail(email);
-        const newUserID = newUser.id;
-
+        // If row's created doesn't equal 0 then registration was successful else return a 500 status
         if (creationResult.rowCount) {
-
-            //Create an object with user's id and email
-            const payload = { id: newUserID, email: email };
-
-            // Sign the payload above with secret key, store it in 'auth' cookie and return successful registration
-            const token = jwt.sign(payload, process.env.secret);
-            res.cookie('auth', token, { httpOnly: true, maxAge: 3600000 }); // This cookie will be httpOnly and have a maxAge of 1 hour (ms)
             return res.status(200).json({ message: "Registration Successful." });
-
         } else {
             return res.status(500).json({ message: "Database error" });
         }
-
     }
     // Catch errors going on in server
     catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
-
 });
 
 // Defining route to get schedule data
-app.get("/api/schedule", async (req, res) => {
+app.get("/api/schedule", authenticateToken, async (req, res) => {
 
     // Will return 2 weeks of schedule data backdated to most recent Sunday
     let today = new Date();
@@ -135,7 +118,7 @@ app.get("/api/schedule", async (req, res) => {
 });
 
 // Defining route to save schedule to database
-app.post("/api/schedule", async (req, res) => {
+app.post("/api/schedule", authenticateToken, async (req, res) => {
     const { user_id, date, location_id } = req.body;
     console.log(user_id, date, location_id);
     const results = await scheduleDatabase.createSchedule(user_id, date, location_id);
