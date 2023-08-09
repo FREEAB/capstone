@@ -23,10 +23,10 @@
 
 <body class="container bg-dark">
 
-    <div class="container d-flex justify-content-center align-items-center" style="height:100vh;">
+    <div class="container d-flex justify-content-center align-items-center" style="height:100vh">
 
         <!-- white box -->
-        <div class="card shadow " style="width:50%; height:65%;">
+        <div class="card shadow">
             <!-- puts border around it: m-auto centers form -->
             <div class="card-body m-auto">
 
@@ -38,14 +38,14 @@
                     <div class="form-group">
                         <!-- first name box -->
                         <label for="first_name">First Name</label>
-                        <input class="form-control" id="first_name" required>
+                        <input class="form-control" type="first_name" id="first_name" required>
                     </div>
                     <!-- space between username and password box -->
                     <div class="form-group mt-1">
 
                         <!-- last name box -->
                         <label for="last_name">Last Name</label>
-                        <input class="form-control" id="last_name" required>
+                        <input class="form-control" type="last_name" id="last_name" required>
                     </div>
 
                     <div class="form-group mt-1">
@@ -68,15 +68,8 @@
                         <input class="form-control" type="password" id="confirm_password" required>
                     </div>
 
-                    <div class="form-group mt-1">
-
-                        <!-- secret key box -->
-                        <label for="secret_key">Secret Key</label>
-                        <input class="form-control" type="text" id="secret_key" required>
-                    </div>
-
                     <!-- account type dropdown menu -->
-                    <select class="form-select mt-3" id="role" aria-label="Default select example">
+                    <select class="form-select mt-3" aria-label="Default select example" id="role">
                         <option selected>Account Type</option>
                         <option value="1">Member</option>
                         <option value="2">Supervisor</option>

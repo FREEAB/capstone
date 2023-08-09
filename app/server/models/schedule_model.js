@@ -28,7 +28,7 @@ pool.connect(function (err) {
  * @returns String representation in YYYY-MM-DD
  */
 function convertDate(date) {
-    return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay();
+    return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 }
 
 /**
@@ -40,7 +40,7 @@ function convertDate(date) {
  */
 async function createSchedule(user_id, date, location_id) {
     try {
-        const results = pool.query(`INSERT INTO schedule (user_id, date, location_id) VALUES (${user_id}, ${convertDate(date)}, ${location_id});`);
+        const results = pool.query(`INSERT INTO schedule (user_id, date, location_id) VALUES (${user_id}, '${date}', ${location_id});`);
         return results;
     } catch (error) {
         throw error;
@@ -77,15 +77,17 @@ async function getScheduleAfterDate(user_id, date) {
 }
 
 /**
- * Function to get all schedule entries for certain user between two dates INCLUSIVE-INCLUSIVE
- * @param {Number} user_id - This parameter represents the user
+ * Function to get all schedule entries between two dates INCLUSIVE-INCLUSIVE
  * @param {Date} start_date - This parameter represents the start date of the search
  * @param {Date} end_date - This parameter represents the end date of the search
  * @returns all schedule entries for a certain user between two dates
  */
-async function getScheduleBetweenDates(user_id, start_date, end_date) {
+async function getScheduleBetweenDates(start_date, end_date) {
     try {
-        const results = pool.query(`SELECT * FROM schedule WHERE user_id = ${user_id} AND date >= ${convertDate(start_date)} AND date <= ${convertDate(end_date)};`)
+        const results = await pool.query(`SELECT user_id, schedule.date, location_id
+        FROM schedule
+        WHERE date > '${convertDate(start_date)}'
+        AND date <= '${convertDate(end_date)}';`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -136,5 +138,15 @@ async function deleteScheduleEntries(user_id) {
         throw error;
     }
 }
+
+module.exports = {
+    createSchedule,
+    getSchedule,
+    getScheduleAfterDate,
+    getScheduleBetweenDates,
+    updateSchedule,
+    deleteScheduleEntries,
+    deleteScheduleEntry
+};
 
 /* End of Bamieh's Code */
