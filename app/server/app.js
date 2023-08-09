@@ -28,6 +28,12 @@ app.get("/", async (req, res) => {
     res.render("login");
 });
 
+// Defining route for troops page
+// Defining route for login page
+app.get("/troops", async (req, res) => {
+    res.render("troops", datab);
+});
+
 const datab = { // This is a temporary database for testing purposes
     users: [
         {
@@ -57,7 +63,7 @@ const datab = { // This is a temporary database for testing purposes
         {
             id: 3,
             firstName: "test4",
-            lastName: "Gronemeier",
+            lastName: "Gron",
             email: "test4@test,gov",
             password: "test4",
             role: "supervisor"

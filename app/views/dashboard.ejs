@@ -60,13 +60,16 @@
                             <td id="<%=user.id%>_day_<%=j%>" style="padding: 1px; width: 6.66%">
                                 <!-- select dropdown menu -->
                                 <select class="form-select dropcolors day_<%=j%>" aria-label="Select">
-                                    <option selected></option>
-                                    <option value="1">H2O</option>
+                                    <option selected style="background-color: white;"></option>
+                                    <option value="1" style="background-color: aqua; color: white;">H2O</option>
                                     <option value="2">ShOC</option>
                                     <option value="3">Telework</option>
                                     <option value="4">Leave</option>
                                     <option value="5">Sick</option>
                                     <option value="6">Holiday</option>
+                                    <!-- option 7 "gone" with brown background when selected -->
+                                    <option value="7" style="background-color: rgb(234, 17, 17); color: white;">Gone
+                                    </option>
                             </td>
                             <% } %>
                     </tr>
@@ -126,7 +129,7 @@
     </div>
 
     <script src="scripts/dashboard.js"> </script>
-    <script>
+    <!-- <script>
         // function to change color of dropdown menu
         const dropdowns = document.querySelectorAll('.dropcolors')
         dropdowns.forEach((dropdown) => {
@@ -149,7 +152,7 @@
                 }
             });
         });
-    </script>
+    </script> -->
 
 </body>
 
