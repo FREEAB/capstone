@@ -30,9 +30,7 @@ app.get("/", async (req, res) => {
 
 // Defining route for troops page
 // Defining route for login page
-app.get("/troops", async (req, res) => {
-    res.render("troops", datab);
-});
+
 
 const datab = { // This is a temporary database for testing purposes
     users: [
@@ -71,6 +69,12 @@ const datab = { // This is a temporary database for testing purposes
     ]
 }
 
+// defining route for settings page
+app.get('/settings', (req, res) => {
+    const datab = { datab }; // Your database object here
+
+    res.render('settings.ejs', { datab });
+});
 
 //Defining protected route for dashboard
 app.get("/dashboard", async (req, res) => {
