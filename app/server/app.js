@@ -80,9 +80,8 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
     // If program makes it here then the credentials were invalid
-    res.status(401).json({ message: "Invali]]d Credentials" });
-});
-
+    res.status(401).json({ message: "Invalid Credentials" });
+});   
 //Handling registering attempts
 app.post("/create", authenticateAdministrator, async (req, res) => {
     try {

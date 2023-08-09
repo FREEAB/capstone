@@ -5,7 +5,7 @@ const Pool = require('pg').Pool;
 // Database connection object
 const pool = new Pool({
     user: 'postgres',
-    host: '10.10.20.136',
+    host: '10.10.20.2',
     database: 'capstone',
     password: 'capstone',
     port: 5432,
