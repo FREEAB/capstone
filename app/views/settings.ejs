@@ -29,6 +29,20 @@
 
                 <h1 class="text-center">Add or Edit Troops</h1>
 
+                <!-- Select boxes -->
+                <div class="form-group mt-3" style="text-align: center;">
+                    <% for (let i=1; i <=6; i++) { %>
+                        <select class="form-select mb-3">
+                            <option selected>Select a user</option>
+                            <% datab.users.forEach(function(user) { %>
+                                <option>
+                                    <%= user.firstName %>
+                                        <%= user.lastName %>
+                                </option>
+                                <% }); %>
+                        </select>
+                        <% } %>
+                </div>
 
                 <!-- submit button -->
                 <div class="form-group mt-3" style="text-align: center;">
