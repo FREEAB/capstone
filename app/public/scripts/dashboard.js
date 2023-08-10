@@ -26,6 +26,7 @@ function getFullDate(date) {
  * @param {Date} date - Date object you'd like to print
  * @returns - String representation of date object (2023-12-25)
  */
+
 function getNumericDate(date) {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
@@ -106,6 +107,8 @@ for (let i = 0; i < 14; i++) {
     dateElement.innerHTML = getFullDate(newDate);
     dayMappings[i] = getNumericDate(newDate);
 
+
+    // Start Gronemeier Code
     // Disable & gray out dropdowns if day of week is 0 (Sun) or 6 (Sat)
     let newDateDay = newDate.getDay();
     if (newDateDay == 0 || newDateDay == 6) {
@@ -116,6 +119,7 @@ for (let i = 0; i < 14; i++) {
         })
     }
 }
+// End Gronemeier Code
 
 // Retrieves Schedule data from database and then populates all appropriate dropdowns
 getScheduleData()
