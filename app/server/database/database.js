@@ -4,10 +4,10 @@ const Pool = require('pg').Pool;
 const passwordTools = require('../scripts/passwordTools');
 
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'capstone',
-    password: 'transfer25',
+    user: 'ikgron',
+    host: '10.10.20.21',
+    database: 'postgres',
+    password: 'capstone',
     port: 5432,
 })
 pool.connect(function (err) {

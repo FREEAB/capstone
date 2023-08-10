@@ -30,19 +30,39 @@
                 <h1 class="text-center">Add or Edit Troops</h1>
 
                 <!-- Select boxes -->
+
                 <div class="form-group mt-3" style="text-align: center;">
-                    <% for (let i=1; i <=6; i++) { %>
-                        <select class="form-select mb-3">
-                            <option selected>Select a user</option>
-                            <% datab.users.forEach(function(user) { %>
-                                <option>
-                                    <%= user.firstName %>
-                                        <%= user.lastName %>
-                                </option>
-                                <% }); %>
-                        </select>
-                        <% } %>
+                    <select class="form-select mb-3">
+                        <option selected>Select a user</option>
+                        <% for (let member of members ) { %>
+
+
+                            <option>
+                                <%= member.last_name %>
+
+                            </option>
+                            <% } %>
+                    </select>
                 </div>
+                <script>
+                    function duplicateSelect(event) {
+                        const select = event.target;
+                        if (select.selectedIndex === 0) return;
+                        const nodeList = document.querySelectorAll('.form-select');
+                        const lastElement = nodeList[nodeList.length - 1];
+
+                        if (select !== lastElement) return;
+                        const newSelect = select.cloneNode(true);
+                        select.after(newSelect);
+                        newSelect.addEventListener('change', duplicateSelect);
+                        console.log(event.target.value)
+                    }
+
+                    document.querySelectorAll('.form-select').forEach((select) => {
+                        select.addEventListener('change', duplicateSelect);
+                    });
+                </script>
+
 
                 <!-- submit button -->
                 <div class="form-group mt-3" style="text-align: center;">

@@ -9,8 +9,8 @@ const saltRounds = 10;
 // Database connection object
 const pool = new Pool({
     user: 'postgres',
-    host: '10.10.20.2',
-    database: 'capstone',
+    host: 'localhost',
+    database: 'postgres',
     password: 'capstone',
     port: 5432,
 })

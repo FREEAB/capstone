@@ -30,6 +30,12 @@ app.get("/", async (req, res) => {
     res.render("login");
 });
 
+// Defining route for settings page
+app.get("/settings", async (req, res) => {
+    user_data = await userDatabase.getUsers();
+    res.render("settings", {members: user_data});
+});
+
 //Defining protected route for dashboard
 app.get("/dashboard", authenticateToken, async (req, res) => {
     user_data = await userDatabase.getUsers();
