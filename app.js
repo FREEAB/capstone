@@ -9,7 +9,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
-const { authenticateToken, authenticateSupervisor, authenticateAdministrator } = require('middleware/authenticator');
+const { authenticateToken, authenticateSupervisor, authenticateAdministrator } = require('middleware/authenticator.js');
 const date_functions = require('./dates.js');
 
 // Setting express's view engine to process ejs vs standard HTML allowing dynamic templating
