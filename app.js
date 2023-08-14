@@ -73,14 +73,15 @@ app.post('/login', async (req, res) => {
                 const token = jwt.sign(payload, process.env.secret);
                 res.cookie('auth', token, { httpOnly: true, maxAge: 3600000 }); // This cookie will be httpOnly and have a maxAge of 1 hour (ms)
                 return res.status(200).json({ message: "Login Successful." });
+            } else {
+                // If program makes it here then the credentials were invalid
+                res.status(401).json({ message: "Invalid Credentials" });
             }
         }
         // Catch errors going on in server
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
-    // If program makes it here then the credentials were invalid
-    res.status(401).json({ message: "Invali]]d Credentials" });
 });
 
 //Handling registering attempts
