@@ -4,8 +4,8 @@ const Pool = require('pg').Pool;
 const passwordTools = require('../scripts/passwordTools');
 
 const pool = new Pool({
-    user: 'ikgron',
-    host: '10.10.20.21',
+    user: 'postgres',
+    host: 'localhost',
     database: 'postgres',
     password: 'capstone',
     port: 5432,
