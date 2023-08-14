@@ -9,8 +9,8 @@ const saltRounds = 10;
 // Database connection object
 const pool = new Pool({
     user: 'postgres',
-    host: 'localhost',
-    database: 'postgres',
+    host: '10.10.20.37',
+    database: 'capstone',
     password: 'capstone',
     port: 5432,
 })
@@ -86,7 +86,7 @@ async function getScheduleBetweenDates(start_date, end_date) {
     try {
         const results = await pool.query(`SELECT user_id, schedule.date, location_id
         FROM schedule
-        WHERE date > '${convertDate(start_date)}'
+        WHERE date >= '${convertDate(start_date)}'
         AND date <= '${convertDate(end_date)}';`);
         return results.rows;
     } catch (error) {
@@ -146,7 +146,8 @@ module.exports = {
     getScheduleBetweenDates,
     updateSchedule,
     deleteScheduleEntries,
-    deleteScheduleEntry
+    deleteScheduleEntry,
+    convertDate
 };
 
 /* End of Bamieh's Code */

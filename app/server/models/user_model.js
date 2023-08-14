@@ -9,8 +9,8 @@ const saltRounds = 10;
 // Database connection object
 const pool = new Pool({
     user: 'postgres',
-    host: 'localhost',
-    database: 'postgres',
+    host: '10.10.20.37',
+    database: 'capstone',
     password: 'capstone',
     port: 5432,
 })
@@ -56,6 +56,36 @@ async function getUserByID(id) {
 async function getUserByEmail(email) {
     try {
         const results = await pool.query(`SELECT * FROM user_data WHERE email = '${email}';`);
+        return results.rows[0];
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**
+ 
+Function to return email of user with certain id
+@param {Number} id - This parameter represents the ID of whatever user your trying to find
+@returns a list of user objects with the given ID
+*/
+async function getUserEmailByID(id) {
+    try {
+        const results = await pool.query(`SELECT email FROM user_data WHERE id = ${ id };`);
+        return results.rows[0];
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**
+ 
+Function to return email of user with role id
+@param {Number} id - This parameter represents the ID of whatever user your trying to find
+@returns a list of user objects with the given ID
+*/
+async function getUserEmailByRoleID(id) {
+    try {
+        const results = await pool.query(`SELECT email FROM user_data WHERE role_id = ${ id };`);
         return results.rows[0];
     } catch (error) {
         throw error;
@@ -161,7 +191,9 @@ module.exports = {
     createUser,
     updateUser,
     deleteUserByID,
-    deleteUserByEmail
+    deleteUserByEmail,
+    getUserEmailByID,
+    getUserEmailByRoleID
 };
 
 /* End of Bamieh's Code */

@@ -11,13 +11,16 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const { authenticateToken, authenticateSupervisor, authenticateAdministrator } = require('./middleware/authenticator');
 const date_functions = require('./dates.js');
-
+const nodeMailer = require("nodemailer")
+const Bree = require('bree')
+const smtpTransport = require('nodemailer-smtp-transport');
 // Setting express's view engine to process ejs vs standard HTML allowing dynamic templating
 app.set('view engine', 'ejs');
 
 // Database model connection object 
 const userDatabase = require('./models/user_model.js');
 const scheduleDatabase = require('./models/schedule_model.js');
+const supervisesDatabase = require('./models/supervises_model.js')
 
 // Setting middleware
 app.set('views', path.join(__dirname, "..", 'views')); // This allows express to look for views in the /views folder
@@ -128,15 +131,128 @@ app.post("/api/schedule", authenticateToken, async (req, res) => {
     console.log(user_id, date, location_id);
     const results = await scheduleDatabase.createSchedule(user_id, date, location_id);
     res.status(200).json({ message: "Schedule was saved!" });
+    
 });
 
-// Defining route for incoming requests without valid path
+// //scheduling frist notification email
+// const bree = new Bree({
+//     jobs: [{
+//         name: 'first_notification',
+//         interval: '5 seconds'
+//         //cron: '0 9 * * 1',
+//     }]
+// })
+// bree.start()
+
+// //scheduling frist notification email
+// const bree2 = new Bree({
+//     jobs: [{
+//         name: 'second_notification',
+//         interval: '5 seconds'
+//         //cron: '15 9 * * 1',
+//     }]
+// })
+// bree2.start()
+// Defining route to send first notification
+
+app.post("/api/email", async (req, res) => {
+    const { user_id } = req.body;
+    console.log(user_id);
+    const id = await supervisesDatabase.getSupervisorByTroopID(user_id);
+    
+    const email = await userDatabase.getUserEmailByID(id);
+   
+    async function sendEmail() {
+        
+
+        //Transporter configuration
+        let transporter = nodeMailer.createTransport(smtpTransport({
+            name: 'smtp.office365.com',
+            host: 'smtp.office365.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user: 'ernest3443@hotmail.com', //REPLACE WITH YOUR EMAIL ADDRESS
+                pass: 'Nene3443' //REPLACE WITH YOUR EMAIL PASSWORD
+            }
+        }));
+
+        //Email configuration
+        const message = await transporter.sendMail({
+            from: "ernest3443@hotmail.com", //SENDER
+            to: '', //MULTIPLE RECEIVERS
+            subject: "Hello", //EMAIL SUBJECT
+            text: "This is a test email.", //EMAIL BODY IN TEXT FORMAT
+            html: "<b>This is a test email.</b>", //EMAIL BODY IN HTML FORMAT
+        })
+        console.log('Message sent: ' + message.messageId)
+        console.log(message.accepted)
+        console.log(message.rejected)
+        
+    }
+
+    sendEmail().catch(err => console.log(err));
+
+
+});
+
+// Defining route to send second notification
+app.post("/api/email2", async (req, res) => {
+    const { user_id } = req.body;
+    console.log(user_id);
+    const id = await supervisesDatabase.getSupervisorByTroopID(user_id);
+    const supervisor = await userDatabase.getUserByID(id);
+    const role = 3
+    const adminEmail = await userDatabase.getUserEmailByRoleID(role);
+
+
+    async function sendEmail() {
+
+
+        //Transporter configuration
+        let transporter = nodeMailer.createTransport(smtpTransport({
+            name: 'smtp.office365.com',
+            host: 'smtp.office365.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user: 'ernest3443@hotmail.com', //REPLACE WITH YOUR EMAIL ADDRESS
+                pass: 'Nene3443' //REPLACE WITH YOUR EMAIL PASSWORD
+            }
+        }));
+
+        //Email configuration
+        const message = await transporter.sendMail({
+            from: "ernest3443@hotmail.com", //SENDER
+            to: [`${ adminEmail }`], //MULTIPLE RECEIVERS
+            subject: "Hello", //EMAIL SUBJECT
+            text: "This is a test email.", //EMAIL BODY IN TEXT FORMAT
+            html: "<b>This is a test email.</b>", //EMAIL BODY IN HTML FORMAT
+        })
+        console.log('Message sent: ' + message.messageId)
+        console.log(message.accepted)
+        console.log(message.rejected)
+    }
+
+    await sendEmail()//.catch(err => console.log(err));
+
+
+});
+async function test() {
+    const dateCopy = new Date();
+    console.log(scheduleDatabase.convertDate(dateCopy))
+    const scheduleOnDate =  await scheduleDatabase.getScheduleBetweenDates(dateCopy, dateCopy)
+    console.log(scheduleOnDate)
+}
+test()
+//Defining route for incoming requests without valid path
 app.get("/*", async (req, res) => {
+    
     res.render("404");
 });
 
 // Starts listening for incoming requests after everything (middleware, routes, settings) has been setup and defined
-app.listen(3000, () => {
+app.listen(5000, () => {
     console.log('Server listening on localhost:3000');
 });
 
