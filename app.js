@@ -9,7 +9,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
-const { authenticateToken, authenticateSupervisor, authenticateAdministrator } = require('./middleware/authenticator');
+const { authenticateToken, authenticateSupervisor, authenticateAdministrator } = require('middleware/authenticator');
 const date_functions = require('./dates.js');
 
 // Setting express's view engine to process ejs vs standard HTML allowing dynamic templating
@@ -20,9 +20,9 @@ const userDatabase = require('./models/user_model.js');
 const scheduleDatabase = require('./models/schedule_model.js');
 
 // Setting middleware
-app.set('views', path.join(__dirname, "..", 'views')); // This allows express to look for views in the /views folder
+app.set('views', path.join(__dirname, 'views')); // This allows express to look for views in the /views folder
 app.use(express.json()); // This allows express to process json sent through response objects
-app.use(express.static(path.join(__dirname, "..", '/public'))); // This allows express to look for static (CSS, JS, Images, etc.) files in the /public folder
+app.use(express.static(path.join(__dirname, '/public'))); // This allows express to look for static (CSS, JS, Images, etc.) files in the /public folder
 app.use(cookieParser()); // This allows express to process cookies through the request objects
 
 // Defining route for login page
