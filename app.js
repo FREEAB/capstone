@@ -1,4 +1,4 @@
-/* Start of Bamieh's Code (/create route made my Carrasco) */
+/* Start of Bamieh's Code ( /create route made my Carrasco ) */
 
 // Importing express and creating app object
 const express = require('express');
@@ -18,6 +18,9 @@ app.set('view engine', 'ejs');
 // Database model connection object 
 const userDatabase = require('./models/user_model.js');
 const scheduleDatabase = require('./models/schedule_model.js');
+
+// Setting constant for port
+const PORT = process.env.port || 3000;
 
 // Setting middleware
 app.set('views', path.join(__dirname, 'views')); // This allows express to look for views in the /views folder
@@ -49,6 +52,12 @@ app.get("/dashboard", authenticateToken, async (req, res) => {
 //Defining route for incoming /create requests
 app.get("/create", authenticateAdministrator, async (req, res) => {
     res.render("create");
+});
+
+// Defining route for settings page
+app.get("/settings", authenticateToken, async (req, res) => {
+    user_data = await userDatabase.getUsers();
+    res.render("settings", { members: user_data });
 });
 
 // Defining route to validate login attempt
@@ -132,7 +141,7 @@ app.get("/*", async (req, res) => {
 });
 
 // Starts listening for incoming requests after everything (middleware, routes, settings) has been setup and defined
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log('Server listening on localhost:3000');
 });
 
