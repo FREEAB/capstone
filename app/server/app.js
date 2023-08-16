@@ -31,7 +31,8 @@ app.get("/", async (req, res) => {
 });
 
 // Defining route for settings page
-app.get("/settings", async (req, res) => {
+app.get("/settings", authenticateToken, async (req, res) => {
+    res.header("Cache-Control", "no-cache, no-store, must-revalidate");
     user_data = await userDatabase.getUsers();
     res.render("settings", {members: user_data});
 });
@@ -39,6 +40,8 @@ app.get("/settings", async (req, res) => {
 //Defining protected route for dashboard
 app.get("/dashboard", authenticateToken, async (req, res) => {
     user_data = await userDatabase.getUsers();
+        res.header("Cache-Control", "private, no-store, no-cache, must-revalidate");
+
 
     // Get dates for most recent sunday to 2 weeks after
     let today = new Date();
@@ -54,8 +57,11 @@ app.get("/dashboard", authenticateToken, async (req, res) => {
 
 //Defining route for incoming /create requests
 app.get("/create", authenticateAdministrator, async (req, res) => {
+    res.header("Cache-Control", "no-cache, no-store, must-revalidate");
     res.render("create");
 });
+
+
 
 // Defining route to validate login attempt
 app.post('/login', async (req, res) => {
@@ -88,6 +94,23 @@ app.post('/login', async (req, res) => {
     // If program makes it here then the credentials were invalid
     res.status(401).json({ message: "Invalid Credentials" });
 });   
+
+function clearAuthCookie(res) {
+    res.clearCookie('auth', {
+        httpOnly: true,
+        maxAge: 0, // Set to 0 to expire the cookie immediately
+        path: '/' // Set the path to match the original cookie's path
+    });
+}
+
+app.get('/logout', (req, res) => {
+    // Clear the auth cookie to remove the token from the client
+    clearAuthCookie(res);
+    res.clearCookie('auth', );
+    console.log("Logout Successful");
+    res.redirect('/');
+});
+
 //Handling registering attempts
 app.post("/create", authenticateAdministrator, async (req, res) => {
     try {
