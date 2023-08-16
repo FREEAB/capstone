@@ -76,6 +76,10 @@
 
                         if (select !== lastElement) return;
                         const newSelect = select.cloneNode(true);
+
+                        const selectedIndex = select.selectedIndex;
+                        newSelect.options[selectedIndex].disabled = true;
+
                         select.after(newSelect);
                         newSelect.addEventListener('change', duplicateSelect);
                         console.log(event.target.value)
