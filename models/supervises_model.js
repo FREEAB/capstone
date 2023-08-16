@@ -3,13 +3,21 @@
 const Pool = require('pg').Pool;
 
 // Database connection object
+// const pool = new Pool({
+//     user: 'capstone_og6v_user',
+//     host: 'oregon-postgres.render.com',
+//     database: 'capstone_og6v',
+//     password: 'hK4qNXlWITTsLjU55fIlDYBHQuZI9xiw',
+//     port: 5432,
+//     ssl: true,
+// })
+
 const pool = new Pool({
-    user: 'capstone_og6v_user',
-    host: 'oregon-postgres.render.com',
-    database: 'capstone_og6v',
-    password: 'hK4qNXlWITTsLjU55fIlDYBHQuZI9xiw',
+    user: 'postgres',
+    host: 'localhost',
+    database: 'capstone',
+    password: 'capstone',
     port: 5432,
-    ssl: true,
 })
 
 // Connecting to database
@@ -17,6 +25,31 @@ pool.connect(function (err) {
     if (err) throw err;
     console.log("Database Connected!");
 });
+/**Function to return all users from with certain supervisor_id
+* @param {Number} id - - This parameter represents the ID of whatever user your trying to find
+* @returns a list of troop objects that have the same supervisor_i
+*/
+async function createSupervisor(supervisor_id, troop_id) {
+    try {
+        const results = await pool.query(`INSERT INTO supervises (supervisor_id, troop_id) VALUES (${supervisor_id}, ${troop_id});`);
+        return results;
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**Function to return all users from with certain supervisor_id
+* @param {Number} id - - This parameter represents the ID of whatever user your trying to find
+* @returns a list of troop objects that have the same supervisor_i
+*/
+async function getTroopBySupervisorID(id) {
+    try {
+        const results = await pool.query(`SELECT troop_id FROM supervises WHERE supervisor_id = '${id}';`);
+        return results.rows;
+    } catch (error) {
+        throw error;
+    }
+};
 
 /**Function to return all users from with certain supervisor_id
 * @param {Number} id - - This parameter represents the ID of whatever user your trying to find
@@ -62,7 +95,7 @@ async function deleteTroopByid(id) {
 */
 async function deleteSupervisorByid(id) {
     try {
-        const results = await pool.query(`DELETE * FROM supervises WHERE supervior_id = '${id}';`);
+        const results = await pool.query(`DELETE FROM supervises WHERE supervisor_id = '${id}';`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -97,7 +130,7 @@ async function updateTroopByid(id, tid) {
 
 // Export functions above
 module.exports = {
-
+    createSupervisor,
     getTroopBySupervisorID,
     getSupervisorByTroopID,
     deleteTroopByid,

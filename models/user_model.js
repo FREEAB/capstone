@@ -7,13 +7,22 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 // Database connection object
+// Database connection object
+// const pool = new Pool({
+//     user: 'capstone_og6v_user',
+//     host: 'oregon-postgres.render.com',
+//     database: 'capstone_og6v',
+//     password: 'hK4qNXlWITTsLjU55fIlDYBHQuZI9xiw',
+//     port: 5432,
+//     ssl: true,
+// })
+
 const pool = new Pool({
-    user: 'capstone_og6v_user',
-    host: 'oregon-postgres.render.com',
-    database: 'capstone_og6v',
-    password: 'hK4qNXlWITTsLjU55fIlDYBHQuZI9xiw',
+    user: 'postgres',
+    host: 'localhost',
+    database: 'capstone',
+    password: 'capstone',
     port: 5432,
-    ssl: true,
 })
 
 // Connecting to database

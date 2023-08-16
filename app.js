@@ -18,6 +18,7 @@ app.set('view engine', 'ejs');
 // Database model connection object 
 const userDatabase = require('./models/user_model.js');
 const scheduleDatabase = require('./models/schedule_model.js');
+const supervisesDatabase = require('./models/supervises_model.js');
 
 // Setting constant for port
 const PORT = process.env.port || 3000;
@@ -135,6 +136,31 @@ app.post("/api/schedule", authenticateToken, async (req, res) => {
     res.status(200).json({ message: "Schedule was saved!" });
 });
 
+app.post("/api/settings", authenticateToken, async (req, res) => {
+    const { troops } = req.body;
+    console.log(troops);
+
+    token = req.cookies.auth;
+    if (!token) {
+        res.status(500).json({ message: "Internal Server Error!" });
+    }
+
+    const payload = jwt.verify(token, process.env.secret);
+    const user_id = payload.id;
+
+    const results = await supervisesDatabase.deleteSupervisorByid(user_id);
+
+    try {
+        for (const troop of troops) {
+            await supervisesDatabase.createSupervisor(user_id, troop);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+
+    res.status(200).json({ message: "Settings was saved!" });
+})
+
 // Defining route for incoming requests without valid path
 app.get("/*", async (req, res) => {
     res.render("404");
@@ -142,7 +168,7 @@ app.get("/*", async (req, res) => {
 
 // Starts listening for incoming requests after everything (middleware, routes, settings) has been setup and defined
 app.listen(PORT, () => {
-    console.log('Server listening on localhost:3000');
+    console.log(`Server listening on localhost:${PORT}`);
 });
 
 /* End of Bamieh's Code */
