@@ -8,11 +8,12 @@ const saltRounds = 10;
 
 // Database connection object
 const pool = new Pool({
-    user: 'postgres',
-    host: '10.10.20.37',
-    database: 'capstone',
-    password: 'capstone',
+    user: 'capstone_og6v_user',
+    host: 'oregon-postgres.render.com',
+    database: 'capstone_og6v',
+    password: 'hK4qNXlWITTsLjU55fIlDYBHQuZI9xiw',
     port: 5432,
+    ssl: true,
 })
 
 // Connecting to database
@@ -56,6 +57,20 @@ async function getUserByID(id) {
 async function getUserByEmail(email) {
     try {
         const results = await pool.query(`SELECT * FROM user_data WHERE email = '${email}';`);
+        return results.rows[0];
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**
+ * Function to returns a users last name with certain id
+ * @param {String} email - This parameter represents the emali of whatever user your trying to find
+ * @returns a list of user objects with the given email
+ */
+async function getUserLastNameByID(id) {
+    try {
+        const results = await pool.query(`SELECT last_name FROM user_data WHERE id = '${id}';`);
         return results.rows[0];
     } catch (error) {
         throw error;
@@ -193,7 +208,9 @@ module.exports = {
     deleteUserByID,
     deleteUserByEmail,
     getUserEmailByID,
-    getUserEmailByRoleID
+    getUserEmailByRoleID,
+    getUserLastNameByID,
+    
 };
 
 /* End of Bamieh's Code */

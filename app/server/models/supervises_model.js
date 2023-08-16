@@ -4,12 +4,13 @@ const Pool = require('pg').Pool;
 
 // Database connection object
 const pool = new Pool({
-    user: 'postgres',
-    host: '10.10.20.37',
-    database: 'capstone',
-    password: 'capstone',
+    user: 'capstone_og6v_user',
+    host: 'oregon-postgres.render.com',
+    database: 'capstone_og6v',
+    password: 'hK4qNXlWITTsLjU55fIlDYBHQuZI9xiw',
     port: 5432,
-})
+    ssl: true,
+});
 
 // Connecting to database
 pool.connect(function (err) {
