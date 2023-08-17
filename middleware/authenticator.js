@@ -26,6 +26,7 @@ const authenticateToken = (req, res, next) => {
             return res.redirect("/");
         }
         req.user_id = payload.id;
+        res.header("Cache-Control", "private, no-store, no-cache, must-revalidate"); // Gronemeier
         next();
     });
 }
@@ -52,6 +53,7 @@ const authenticateSupervisor = (req, res, next) => {
             return res.redirect("/");
         }
         if (payload.role >= 2) {
+            res.header("Cache-Control", "private, no-store, no-cache, must-revalidate"); // Gronemeier
             next();
         }
         return res.redirect("/");
@@ -81,6 +83,7 @@ const authenticateAdministrator = (req, res, next) => {
             return res.redirect("/dashboard");
         }
         if (payload.role === 3) {
+            res.header("Cache-Control", "private, no-store, no-cache, must-revalidate"); // Gronemeier
             next();
         } else {
             return res.redirect("/dashboard");

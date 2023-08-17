@@ -57,7 +57,8 @@ app.get("/create", authenticateAdministrator, async (req, res) => {
 
 // Defining route for settings page
 app.get("/settings", authenticateToken, async (req, res) => {
-    user_data = await userDatabase.getUsers();
+    const payload = jwt.verify(req.cookies.auth, process.env.secret);
+    user_data = await userDatabase.getUserBelowRole(payload.role);
     res.render("settings", { members: user_data });
 });
 
@@ -136,6 +137,7 @@ app.post("/api/schedule", authenticateToken, async (req, res) => {
     res.status(200).json({ message: "Schedule was saved!" });
 });
 
+// Defining route to save supervisor settings
 app.post("/api/settings", authenticateToken, async (req, res) => {
     const { troops } = req.body;
     console.log(troops);
@@ -160,6 +162,22 @@ app.post("/api/settings", authenticateToken, async (req, res) => {
 
     res.status(200).json({ message: "Settings was saved!" });
 })
+
+function clearAuthCookie(res) {
+    res.clearCookie('auth', {
+        httpOnly: true,
+        maxAge: 0, // Set to 0 to expire the cookie immediately
+        path: '/' // Set the path to match the original cookie's path
+    });
+}
+
+app.get('/logout', (req, res) => {
+    // Clear the auth cookie to remove the token from the client
+    clearAuthCookie(res);
+    res.clearCookie('auth',);
+    console.log("Logout Successful");
+    res.redirect('/');
+});
 
 // Defining route for incoming requests without valid path
 app.get("/*", async (req, res) => {

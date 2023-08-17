@@ -7,30 +7,35 @@ const bycrpt = require('bcrypt');
 const saltRounds = 10;
 
 // Database connection object
-// Database connection object
-// const pool = new Pool({
-//     user: 'capstone_og6v_user',
-//     host: 'oregon-postgres.render.com',
-//     database: 'capstone_og6v',
-//     password: 'hK4qNXlWITTsLjU55fIlDYBHQuZI9xiw',
-//     port: 5432,
-//     ssl: true,
-// })
-
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'capstone',
-    password: 'capstone',
+    user: 'capstone_og6v_user',
+    host: 'oregon-postgres.render.com',
+    database: 'capstone_og6v',
+    password: 'hK4qNXlWITTsLjU55fIlDYBHQuZI9xiw',
     port: 5432,
+    ssl: true,
 })
 
-// Connecting to database
-pool.connect(function (err) {
-    if (err) throw err;
-    console.log("Database Connected!");
-});
+// const pool = new Pool({
+//     user: 'postgres',
+//     host: 'localhost',
+//     database: 'capstone',
+//     password: 'capstone',
+//     port: 5432,
+// })
 
+//Function to run query and properly close connection afterwards
+async function runQuery(queryString) {
+    let results;
+    try {
+        const dataConnection = await pool.connect();
+        const results = await dataConnection.query(queryString);
+        await dataConnection.release();
+        return results;
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 /**
  * Function to convert js Date object to something sql can read easily
@@ -50,7 +55,7 @@ function convertDate(date) {
  */
 async function createSchedule(user_id, date, location_id) {
     try {
-        const results = pool.query(`INSERT INTO schedule (user_id, date, location_id) VALUES (${user_id}, '${date}', ${location_id});`);
+        const results = runQuery(`INSERT INTO schedule (user_id, date, location_id) VALUES (${user_id}, '${date}', ${location_id});`);
         return results;
     } catch (error) {
         throw error;
@@ -64,7 +69,7 @@ async function createSchedule(user_id, date, location_id) {
  */
 async function getSchedule(user_id) {
     try {
-        const results = pool.query(`SELECT * FROM schedule WHERE user_id = ${user_id};`);
+        const results = runQuery(`SELECT * FROM schedule WHERE user_id = ${user_id};`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -79,7 +84,7 @@ async function getSchedule(user_id) {
  */
 async function getScheduleAfterDate(user_id, date) {
     try {
-        const results = pool.query(`SELECT * FROM schedule WHERE user_id = ${user_id} AND date >= ${convertDate(date)};`);
+        const results = runQuery(`SELECT * FROM schedule WHERE user_id = ${user_id} AND date >= ${convertDate(date)};`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -94,7 +99,7 @@ async function getScheduleAfterDate(user_id, date) {
  */
 async function getScheduleBetweenDates(start_date, end_date) {
     try {
-        const results = await pool.query(`SELECT user_id, schedule.date, location_id
+        const results = await runQuery(`SELECT user_id, schedule.date, location_id
         FROM schedule
         WHERE date > '${convertDate(start_date)}'
         AND date <= '${convertDate(end_date)}';`);
@@ -113,7 +118,7 @@ async function getScheduleBetweenDates(start_date, end_date) {
  */
 async function updateSchedule(user_id, date, location_id) {
     try {
-        const results = pool.query(`UPDATE schedule SET location = ${location_id} WHERE user_id = ${user_id} AND date = ${convertDate(date)};`)
+        const results = runQuery(`UPDATE schedule SET location = ${location_id} WHERE user_id = ${user_id} AND date = ${convertDate(date)};`)
         return results;
     } catch (error) {
         throw error;
@@ -128,7 +133,7 @@ async function updateSchedule(user_id, date, location_id) {
  */
 async function deleteScheduleEntry(user_id, date) {
     try {
-        const results = pool.query(`DELETE * FROM schedule WHERE user_id = ${user_id} AND date = ${convertDate(date)};`);
+        const results = runQuery(`DELETE * FROM schedule WHERE user_id = ${user_id} AND date = ${convertDate(date)};`);
         return results;
     } catch (error) {
         throw error;
@@ -142,7 +147,7 @@ async function deleteScheduleEntry(user_id, date) {
  */
 async function deleteScheduleEntries(user_id) {
     try {
-        const results = pool.query(`DELETE * FROM schedule WHERE user_id = ${user_id};`);
+        const results = runQuery(`DELETE * FROM schedule WHERE user_id = ${user_id};`);
         return results;
     } catch (error) {
         throw error;

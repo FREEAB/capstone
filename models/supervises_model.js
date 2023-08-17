@@ -3,35 +3,43 @@
 const Pool = require('pg').Pool;
 
 // Database connection object
-// const pool = new Pool({
-//     user: 'capstone_og6v_user',
-//     host: 'oregon-postgres.render.com',
-//     database: 'capstone_og6v',
-//     password: 'hK4qNXlWITTsLjU55fIlDYBHQuZI9xiw',
-//     port: 5432,
-//     ssl: true,
-// })
-
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'capstone',
-    password: 'capstone',
+    user: 'capstone_og6v_user',
+    host: 'oregon-postgres.render.com',
+    database: 'capstone_og6v',
+    password: 'hK4qNXlWITTsLjU55fIlDYBHQuZI9xiw',
     port: 5432,
+    ssl: true,
 })
 
-// Connecting to database
-pool.connect(function (err) {
-    if (err) throw err;
-    console.log("Database Connected!");
-});
+// const pool = new Pool({
+//     user: 'postgres',
+//     host: 'localhost',
+//     database: 'capstone',
+//     password: 'capstone',
+//     port: 5432,
+// })
+
+//Function to run query and properly close connection afterwards
+async function runQuery(queryString) {
+    let results;
+    try {
+        const dataConnection = await pool.connect();
+        const results = await dataConnection.query(queryString);
+        await dataConnection.release();
+        return results;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 /**Function to return all users from with certain supervisor_id
 * @param {Number} id - - This parameter represents the ID of whatever user your trying to find
 * @returns a list of troop objects that have the same supervisor_i
 */
 async function createSupervisor(supervisor_id, troop_id) {
     try {
-        const results = await pool.query(`INSERT INTO supervises (supervisor_id, troop_id) VALUES (${supervisor_id}, ${troop_id});`);
+        const results = await runQuery(`INSERT INTO supervises (supervisor_id, troop_id) VALUES (${supervisor_id}, ${troop_id});`);
         return results;
     } catch (error) {
         throw error;
@@ -44,7 +52,7 @@ async function createSupervisor(supervisor_id, troop_id) {
 */
 async function getTroopBySupervisorID(id) {
     try {
-        const results = await pool.query(`SELECT troop_id FROM supervises WHERE supervisor_id = '${id}';`);
+        const results = await runQuery(`SELECT troop_id FROM supervises WHERE supervisor_id = '${id}';`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -57,7 +65,7 @@ async function getTroopBySupervisorID(id) {
 */
 async function getTroopBySupervisorID(id) {
     try {
-        const results = await pool.query(`SELECT troop_id FROM supervises WHERE supervisor_id = '${id}';`);
+        const results = await runQuery(`SELECT troop_id FROM supervises WHERE supervisor_id = '${id}';`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -71,7 +79,7 @@ async function getTroopBySupervisorID(id) {
 */
 async function getSupervisorByTroopID(id) {
     try {
-        const results = await pool.query(`SELECT supervisor_id FROM supervises WHERE troop_id = '${id}';`);
+        const results = await runQuery(`SELECT supervisor_id FROM supervises WHERE troop_id = '${id}';`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -83,7 +91,7 @@ async function getSupervisorByTroopID(id) {
 */
 async function deleteTroopByid(id) {
     try {
-        const results = await pool.query(`DELETE * FROM supervises WHERE troop_id = '${id}';`);
+        const results = await runQuery(`DELETE * FROM supervises WHERE troop_id = '${id}';`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -95,7 +103,7 @@ async function deleteTroopByid(id) {
 */
 async function deleteSupervisorByid(id) {
     try {
-        const results = await pool.query(`DELETE FROM supervises WHERE supervisor_id = '${id}';`);
+        const results = await runQuery(`DELETE FROM supervises WHERE supervisor_id = '${id}';`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -108,7 +116,7 @@ async function deleteSupervisorByid(id) {
 */
 async function updateSupervisorByid(id, sid) {
     try {
-        const results = await pool.query(`UPDATE supervises SET supervisor_id = ${sid} WHERE supervisor_id = '${id}';`);
+        const results = await runQuery(`UPDATE supervises SET supervisor_id = ${sid} WHERE supervisor_id = '${id}';`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -121,7 +129,7 @@ async function updateSupervisorByid(id, sid) {
 */
 async function updateTroopByid(id, tid) {
     try {
-        const results = await pool.query(`UPDATE supervises SET troop_id = ${tid} WHERE troop_id = '${id}';`);
+        const results = await runQuery(`UPDATE supervises SET troop_id = ${tid} WHERE troop_id = '${id}';`);
         return results.rows;
     } catch (error) {
         throw error;
