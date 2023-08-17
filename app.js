@@ -1,4 +1,4 @@
-/* Start of Bamieh's Code ( /create route made my Carrasco ) */
+/* Start of Bamieh's Code */
 
 // Importing express and creating app object
 const express = require('express');
@@ -20,7 +20,7 @@ const userDatabase = require('./models/user_model.js');
 const scheduleDatabase = require('./models/schedule_model.js');
 const supervisesDatabase = require('./models/supervises_model.js');
 
-// Setting constant for port
+// Setting constant for port, need to use process.env.port or 3000 for WHS purposes
 const PORT = process.env.port || 3000;
 
 // Setting middleware
@@ -29,36 +29,58 @@ app.use(express.json()); // This allows express to process json sent through res
 app.use(express.static(path.join(__dirname, '/public'))); // This allows express to look for static (CSS, JS, Images, etc.) files in the /public folder
 app.use(cookieParser()); // This allows express to process cookies through the request objects
 
+// Function to clear Auth cookie from broswer cookies (Gronemeier)
+function clearAuthCookie(res) {
+    res.clearCookie('auth', {
+        httpOnly: true,
+        maxAge: 0, // Set to 0 to expire the cookie immediately
+        path: '/' // Set the path to match the original cookie's path
+    });
+}
+
+// Function to remove hashed passwords from user data being served to ejs
+function removeHashedPassword(userData) {
+    userData.forEach(user => {
+        delete user['hashed_password'];
+    });
+    return userData;
+}
+
 // Defining route for login page
 app.get("/", async (req, res) => {
     res.render("login");
 });
 
-//Defining protected route for dashboard
+// Defining protected route for dashboard
 app.get("/dashboard", authenticateToken, async (req, res) => {
-    user_data = await userDatabase.getUsers();
+    let user_data = await userDatabase.getUsers();
+    user_data = removeHashedPassword(user_data);
 
     // Get dates for most recent sunday to 2 weeks after
-    let today = new Date();
-    let offset = -today.getDay();
+    const today = new Date();
+    const offset = -today.getDay();
 
     // Getting start and end date to pass into schedule query
-    let start_date = date_functions.addDays(today, offset);
-    let end_date = date_functions.addDays(start_date, 14);
+    const start_date = date_functions.addDays(today, offset);
+    const end_date = date_functions.addDays(start_date, 14);
 
     schedule_data = await scheduleDatabase.getScheduleBetweenDates(start_date, end_date);
     res.render("dashboard", { members: user_data, schedule: schedule_data });
 });
 
-//Defining route for incoming /create requests
+// Defining route for incoming /create requests (Carrasco)
 app.get("/create", authenticateAdministrator, async (req, res) => {
     res.render("create");
 });
 
 // Defining route for settings page
-app.get("/settings", authenticateToken, async (req, res) => {
+app.get("/settings", authenticateSupervisor, async (req, res) => {
     const payload = jwt.verify(req.cookies.auth, process.env.secret);
-    user_data = await userDatabase.getUserBelowRole(payload.role);
+    let user_data = await userDatabase.getUserBelowRole(payload.role);
+    user_data = removeHashedPassword(user_data);
+    user_data = user_data.filter(user => user.id !== payload.id);
+    console.log(payload.id);
+    console.log(user_data);
     res.render("settings", { members: user_data });
 });
 
@@ -95,7 +117,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-//Handling registering attempts
+//Handling registering attempts (Carrasco)
 app.post("/create", authenticateAdministrator, async (req, res) => {
     try {
         //Using destructuring assignment to pull first_name, last_name, email, password, and role
@@ -138,7 +160,7 @@ app.post("/api/schedule", authenticateToken, async (req, res) => {
 });
 
 // Defining route to save supervisor settings
-app.post("/api/settings", authenticateToken, async (req, res) => {
+app.post("/api/settings", authenticateSupervisor, async (req, res) => {
     const { troops } = req.body;
     console.log(troops);
 
@@ -163,14 +185,7 @@ app.post("/api/settings", authenticateToken, async (req, res) => {
     res.status(200).json({ message: "Settings was saved!" });
 })
 
-function clearAuthCookie(res) {
-    res.clearCookie('auth', {
-        httpOnly: true,
-        maxAge: 0, // Set to 0 to expire the cookie immediately
-        path: '/' // Set the path to match the original cookie's path
-    });
-}
-
+// Defining route to logout of account and delete auth token (Gronemeier)
 app.get('/logout', (req, res) => {
     // Clear the auth cookie to remove the token from the client
     clearAuthCookie(res);

@@ -1,41 +1,7 @@
 /* Start of Bamieh's Code */
 
-const Pool = require('pg').Pool;
-const bycrpt = require('bcrypt');
-
-// Defining constants
-const saltRounds = 10;
-
-// Database connection object
-const pool = new Pool({
-    user: 'capstone_og6v_user',
-    host: 'oregon-postgres.render.com',
-    database: 'capstone_og6v',
-    password: 'hK4qNXlWITTsLjU55fIlDYBHQuZI9xiw',
-    port: 5432,
-    ssl: true,
-})
-
-// const pool = new Pool({
-//     user: 'postgres',
-//     host: 'localhost',
-//     database: 'capstone',
-//     password: 'capstone',
-//     port: 5432,
-// })
-
-//Function to run query and properly close connection afterwards
-async function runQuery(queryString) {
-    let results;
-    try {
-        const dataConnection = await pool.connect();
-        const results = await dataConnection.query(queryString);
-        await dataConnection.release();
-        return results;
-    } catch (err) {
-        console.log(err);
-    }
-}
+// Getting runQuery function from pool.js
+const { runQuery } = require('./pool.js');
 
 /**
  * Function to convert js Date object to something sql can read easily
