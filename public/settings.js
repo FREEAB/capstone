@@ -73,10 +73,27 @@ async function submitChanges(event) {
     };
 }
 
+function disableSelectedOptions() {
+    const selectedIndices = [];
+    document.querySelectorAll(".form-select").forEach((select) => {
+        if (select.selectedIndex !== 0) selectedIndices.push(select.selectedIndex);
+    });
+    document.querySelectorAll(".form-select").forEach((select) => {
+        select.querySelectorAll("option").forEach((option, index) => {
+            if (index === 0 || selectedIndices.includes(index)) {
+                option.disabled = true;
+            } else {
+                option.disabled = false;
+            }
+        })
+    });
+}
 // Assigning 'change' event listener to duplicateSelect (Gronemeier)
 document.querySelectorAll('.form-select').forEach((select) => {
     select.addEventListener('change', duplicateSelect);
 });
+
+document.addEventListener('DOMContentLoaded', disableSelectedOptions);
 
 // Assigning submitChanges function to 'click' event
 submitButton = document.querySelector('#submit-button');

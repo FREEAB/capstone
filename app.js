@@ -102,6 +102,7 @@ app.post('/login', async (req, res) => {
         // Try to find a user using the email put in
         const user = await userDatabase.getUserByEmail(email);
         if (user) {
+
             // If there is a user for the email then get their hashed password and compare it to the input password
             const hashedPassword = user.hashed_password;
             const passwordValid = await bcrypt.compare(password, hashedPassword);
