@@ -75,13 +75,20 @@ app.get("/create", authenticateAdministrator, async (req, res) => {
 
 // Defining route for settings page
 app.get("/settings", authenticateSupervisor, async (req, res) => {
+
+    // Getting payload from token
     const payload = jwt.verify(req.cookies.auth, process.env.secret);
     let user_data = await userDatabase.getUserBelowRole(payload.role);
+
+    // Getting user data and removing hashed passwords before serving to ejs as well as filtering out current user
     user_data = removeHashedPassword(user_data);
     user_data = user_data.filter(user => user.id !== payload.id);
-    console.log(payload.id);
-    console.log(user_data);
-    res.render("settings", { members: user_data });
+
+    // Getting troops for population of settings page
+    let troops = await supervisesDatabase.getTroopBySupervisorID(payload.id);
+    troops = removeHashedPassword(troops);
+
+    res.render("settings", { troops: troops, members: user_data });
 });
 
 // Defining route to validate login attempt
@@ -162,7 +169,7 @@ app.post("/api/schedule", authenticateToken, async (req, res) => {
 // Defining route to save supervisor settings
 app.post("/api/settings", authenticateSupervisor, async (req, res) => {
     const { troops } = req.body;
-    console.log(troops);
+    // console.log(troops);
 
     token = req.cookies.auth;
     if (!token) {

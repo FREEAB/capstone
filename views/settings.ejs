@@ -54,16 +54,37 @@
                         <h1 class="mb-4">Add or Edit Troops</h1>
 
                         <!-- Select boxes -->
-                        <!-- <form id="selection_form"> </form> -->
                         <div class="form-group mt-3" id="selection-form" style="text-align: center;">
-                            <select class="form-select mb-3">
-                                <option selected>Select a user</option>
-                                <% for (let member of members ) { %>
-                                    <option value="<%= member.id %>">
-                                        <%= member.last_name %>
-                                    </option>
-                                    <% } %>
-                            </select>
+
+                            <!-- If there are any troops to populate then loop through them (Bamieh)-->
+                            <% if (troops) { %>
+                                <% for (let troop of troops) { %>
+
+                                    <!-- Create a select box for every troop (Bamieh)-->
+                                    <select class="form-select mb-3">
+                                        <option>Select a user</option>
+
+                                        <!-- Loop through members and if the member is the same as the troop then select it (Bamieh)-->
+                                        <% for (let member of members ) { %>
+                                            <% if (member.id===troop.troop_id) {%>
+                                                <option selected value="<%= member.id %>">
+                                                    <%= member.last_name %>
+                                                </option>
+                                                <%} else {%>
+                                                    <option value="<%= member.id %>">
+                                                        <%= member.last_name %>
+                                                    </option>
+                                                    <%}}%>
+                                    </select>
+                                    <%}}%>
+                                        <select class="form-select mb-3">
+                                            <option selected>Select a user</option>
+                                            <% for (let member of members ) { %>
+                                                <option value="<%= member.id %>">
+                                                    <%= member.last_name %>
+                                                </option>
+                                                <% } %>
+                                        </select>
                         </div>
 
                         <!-- submit button -->

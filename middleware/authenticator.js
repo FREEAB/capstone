@@ -32,7 +32,7 @@ const authenticateToken = (req, res, next) => {
 }
 
 /** 
- * Middleware to authenticate only supervisors
+ * Middleware to authenticate only supervisors or administrators
  * @param {Request} req - This parameter represents the request object.
  * @param {Response} res - This parameter represents the response object.
  * @param {Function} next - This parameter represents the function to pass control to after your middleware has done its job.
@@ -52,11 +52,12 @@ const authenticateSupervisor = (req, res, next) => {
         if (err) {
             return res.redirect("/");
         }
-        if (payload.role >= 2) {
+        if (payload.role === 2 || payload.role === 3) {
             res.header("Cache-Control", "private, no-store, no-cache, must-revalidate"); // Gronemeier
             next();
+        } else {
+            return res.redirect("/dashboard");
         }
-        return res.redirect("/dashboard");
     });
 }
 
