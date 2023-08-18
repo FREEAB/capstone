@@ -56,7 +56,7 @@ const authenticateSupervisor = (req, res, next) => {
             res.header("Cache-Control", "private, no-store, no-cache, must-revalidate"); // Gronemeier
             next();
         }
-        return res.redirect("/");
+        return res.redirect("/dashboard");
     });
 }
 
