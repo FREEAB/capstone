@@ -16,6 +16,15 @@ const pool = new Pool({
     ssl: true,
 })
 
+// // Database connection object
+// const pool = new Pool({
+//     user: 'postgres',
+//     host: '192.168.0.239',
+//     database: 'postgres',
+//     password: 'capstone',
+//     port: 5432,
+// })
+
 // Connecting to database
 pool.connect(function (err) {
     if (err) throw err;

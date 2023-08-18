@@ -1,3 +1,4 @@
+// Importing necessary libraries
 const nodeMailer = require("nodemailer");
 const smtpTransport = require('nodemailer-smtp-transport');
 
@@ -6,51 +7,70 @@ const userDatabase = require('../models/user_model.js');
 const scheduleDatabase = require('../models/schedule_model.js');
 const supervisesDatabase = require('../models/supervises_model.js')
 
-async function test() {
+
+async function sendEmail() {
     const dateCopy = new Date();
-    console.log(scheduleDatabase.convertDate(dateCopy))
+    // Returns schedule data for todays date as array of objects
     const scheduleOnDate =  await scheduleDatabase.getScheduleBetweenDates(dateCopy, dateCopy)
-    console.log(scheduleOnDate)
+    
+    // creates array of user ids that have filled out schedule for today 
     const scheduleID = []
     for (member of scheduleOnDate) {
         
         scheduleID.push(member.user_id)
-       
+    
     }
-    console.log(scheduleID)
-    console.log('/')
+    
+    
+    // returns  all users from data base and adds their ids in an array 
     const users = await userDatabase.getUsers()
     const userIDList =[]
     for (member of users) {
-         
-        
-        userIDList.push(member.id)
-       
+    userIDList.push(member.id)   
     }
+    // Returns Array of users that have not filled out schedule for today 
     const toRemove = new Set(scheduleID);
-    console.log(userIDList)
-    const id = userIDList.filter( x => !toRemove.has(x) );
-    console.log(id)
-    const supervisorID =[]
-    for (member of id) {
-         
-        
-        const supervisor = await supervisesDatabase.getSupervisorByTroopID(member)
-        console.log(supervisor)
-        supervisorID.push(supervisor)
-    }
-    console.log(supervisorID)
-    const supervisorEmail =[]
-    for (member of supervisorID) {
-        const getEmail = await userDatabase.getUserEmailByID(member) 
-        supervisorEmail.push(getEmail)
-        
-    }
-    console.log(supervisorEmail)
     
-    async function sendEmail() {
-        
+    const id = userIDList.filter( x => !toRemove.has(x) );
+    
+    // Returns false if everyone has filled out their schedule for today. Keeps running code if else 
+    if (id === undefined || id.length == 0) {
+      return false;
+    } else {
+        //Creates array of objects containing supervisor ids    
+        const supervisor =[]
 
+        for (member of id) {
+            const getSupervisor = await supervisesDatabase.getSupervisorByTroopID(member)
+            const getID =  getSupervisor[0]
+            supervisor.push(getID)
+        }
+        //Removes undefinied values from array 
+        const supervisorfilter  = supervisor.filter(item => !!item);
+        //creates array of supervisor ids
+        const supervisorList = []
+        for (member of supervisorfilter) {
+            supervisorList.push(member.supervisor_id)
+        }
+        
+        //removes duplicates from array
+        const supervisorID = [...new Set(supervisorList)];
+        //creates array of objects containing supervisor emails
+        
+        const supervisorArray =[]
+        for (member of supervisorID) {
+            const getEmail = await userDatabase.getUserEmailByID(member) 
+            supervisorArray.push(getEmail)
+        
+        }
+        //creates array of supervisor emails
+        
+        const supervisorEmail =[]
+        for (member of supervisorArray) {
+            supervisorEmail.push(member.email)
+        }
+        
+        
         //Transporter configuration
         let transporter = nodeMailer.createTransport(smtpTransport({
             name: 'smtp.office365.com',
@@ -68,8 +88,8 @@ async function test() {
             from: "ernest3443@hotmail.com", //SENDER
             to: [`${supervisorEmail}`], //MULTIPLE RECEIVERS
             subject: "Hello", //EMAIL SUBJECT
-            text: "This is a test email.", //EMAIL BODY IN TEXT FORMAT
-            html: "<b>This is a test email.</b>", //EMAIL BODY IN HTML FORMAT
+            text: `sergeant your troops haven't filled out there accountability tracker.`, //EMAIL BODY IN TEXT FORMAT
+            html: "<b>sergeant your troops haven't filled out there accountability tracker.</b>", //EMAIL BODY IN HTML FORMAT
         })
         console.log('Message sent: ' + message.messageId)
         console.log(message.accepted)
@@ -77,7 +97,6 @@ async function test() {
         
     }
 
-    sendEmail().catch(err => console.log(err));
-
+    
 }
-test()
+sendEmail().catch(err => console.log(err));

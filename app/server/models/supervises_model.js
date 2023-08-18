@@ -12,6 +12,15 @@ const pool = new Pool({
     ssl: true,
 });
 
+// // Database connection object
+// const pool = new Pool({
+//     user: 'postgres',
+//     host: '192.168.0.239',
+//     database: 'postgres',
+//     password: 'capstone',
+//     port: 5432,
+// })
+
 // Connecting to database
 pool.connect(function (err) {
     if (err) throw err;
@@ -24,7 +33,20 @@ pool.connect(function (err) {
 */
 async function getTroopBySupervisorID(id) {
     try {
-        const results = await pool.query(`SELECT troop_id FROM supervises WHERE supervisor_id = '${id}';`);
+        const results = await pool.query(`SELECT troop_id FROM supervises WHERE supervisor_id = ANY('${id}');`);
+        return results.rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**Function to return all users from with certain supervisor_id
+* @param {Number} id - - This parameter represents the ID of whatever user your trying to find
+* @returns a list of troop objects that have the same supervisor_i
+*/
+async function getsupervisorT() {
+    try {
+        const results = await pool.query(`SELECT * FROM supervises;`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -103,7 +125,8 @@ module.exports = {
     deleteTroopByid,
     deleteSupervisorByid,
     updateSupervisorByid,
-    updateTroopByid
+    updateTroopByid,
+    getsupervisorT
 
 };
 

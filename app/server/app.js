@@ -11,16 +11,16 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const { authenticateToken, authenticateSupervisor, authenticateAdministrator } = require('./middleware/authenticator');
 const date_functions = require('./dates.js');
-const nodeMailer = require("nodemailer");
+
 const Bree = require('bree');
-const smtpTransport = require('nodemailer-smtp-transport');
+
 // Setting express's view engine to process ejs vs standard HTML allowing dynamic templating
 app.set('view engine', 'ejs');
 
 // Database model connection object 
 const userDatabase = require('./models/user_model.js');
 const scheduleDatabase = require('./models/schedule_model.js');
-const supervisesDatabase = require('./models/supervises_model.js')
+const supervisesDatabase = require('./models/supervises_model.js');
 
 // Setting middleware
 app.set('views', path.join(__dirname, "..", 'views')); // This allows express to look for views in the /views folder
@@ -134,25 +134,25 @@ app.post("/api/schedule", authenticateToken, async (req, res) => {
     
 });
 
-// //scheduling frist notification email
-// const bree = new Bree({
-//     jobs: [{
-//         name: 'first_notification',
-//         interval: '5 seconds'
-//         //cron: '0 9 * * 1-5',
-//     }]
-// })
-// bree.start()
+//scheduling frist notification email
+const bree = new Bree({
+    jobs: [{
+        name: 'first_notification',
+        interval: '5 seconds'
+        //cron: '0 9 * * 1-5',
+    }]
+});
+bree.start();
 
-// //scheduling frist notification email
-// const bree2 = new Bree({
-//     jobs: [{
-//         name: 'second_notification',
-//         interval: '5 seconds'
-//         //cron: '15 9 * * 1-5'
-//     }]
-// })
-// bree2.start()
+//scheduling frist notification email
+const bree2 = new Bree({
+    jobs: [{
+        name: 'second_notification',
+        interval: '5 seconds'
+        //cron: '15 9 * * 1-5'
+    }]
+});
+bree2.start();
 //Defining route to send first notification
 
 

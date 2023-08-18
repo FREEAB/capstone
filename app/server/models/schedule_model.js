@@ -16,6 +16,16 @@ const pool = new Pool({
     ssl: true,
 })
 
+
+// // Database connection object
+// const pool = new Pool({
+//     user: 'postgres',
+//     host: '192.168.0.239',
+//     database: 'postgres',
+//     password: 'capstone',
+//     port: 5432,
+// })
+
 // Connecting to database
 pool.connect(function (err) {
     if (err) throw err;
@@ -71,6 +81,20 @@ async function getSchedule(user_id) {
 async function getScheduleAfterDate(user_id, date) {
     try {
         const results = pool.query(`SELECT * FROM schedule WHERE user_id = ${user_id} AND date >= ${convertDate(date)};`);
+        return results.rows;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Function to get all schedule entries for certain date
+ * @param {Date} date - This parameter represents the date to search after
+ * @returns all schedule entries for a certain user after or on a certain date
+ */
+async function getScheduleOnDate( date) {
+    try {
+        const results = pool.query(`SELECT user_id FROM schedule WHERE date = '${convertDate(date)}';`);
         return results.rows;
     } catch (error) {
         throw error;
@@ -148,7 +172,8 @@ module.exports = {
     updateSchedule,
     deleteScheduleEntries,
     deleteScheduleEntry,
-    convertDate
+    convertDate,
+    getScheduleOnDate
 };
 
 /* End of Bamieh's Code */
