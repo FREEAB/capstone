@@ -14,7 +14,14 @@ createForm.addEventListener('submit', async (event) => {
     const lastName = createForm.elements['last_name'].value;
     const email = createForm.elements['email'].value;
     const password = createForm.elements['password'].value;
+    const confirmed_password = createForm.elements['confirm_password'].value;
     const role = createForm.elements['role'].value;
+
+    // Check if passwords are confirmed
+    if (password !== confirmed_password) {
+        alert("Passwords do not match");
+        return;
+    }
 
     try {
 
