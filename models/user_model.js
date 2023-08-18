@@ -63,6 +63,20 @@ async function getUserByEmail(email) {
 };
 
 /**
+ * Function to returns a users last name with certain id
+ * @param {String} email - This parameter represents the emali of whatever user your trying to find
+ * @returns a list of user objects with the given email
+ */
+async function getUserLastNameByID(id) {
+    try {
+        const results = await runQuery(`SELECT last_name FROM user_data WHERE id = '${id}';`);
+        return results.rows[0];
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**
  * Function to create a user in the user_data table
  * @param {String} email - This parameter represents the email of the new user
  * @param {String} password - This parameter represents the plain_text password of the new user
@@ -82,6 +96,32 @@ async function createUser(email, password, first_name, last_name, role) {
         return results;
     } catch (error) {
         console.log("Error was thrown in user_Model.createUser");
+        throw error;
+    }
+};
+
+/**  Function to return email of user with role id
+ @param {Number} id - This parameter represents the ID of whatever user your trying to find
+ @returns a list of user objects with the given ID
+ */
+async function getUserEmailByRoleID(id) {
+    try {
+        const results = await runQuery(`SELECT email FROM user_data WHERE role_id = ${id};`);
+        return results.rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
+/** Function to return email of user with certain id
+@param {Number} id - This parameter represents the ID of whatever user your trying to find
+@returns a list of user objects with the given ID
+*/
+async function getUserEmailByID(id) {
+    try {
+        const results = await runQuery(`SELECT email FROM user_data WHERE id = ${id};`);
+        return results.rows[0];
+    } catch (error) {
         throw error;
     }
 };
@@ -159,6 +199,9 @@ module.exports = {
     getUserByID,
     getUserBelowRole,
     getUserByEmail,
+    getUserLastNameByID,
+    getUserEmailByID,
+    getUserEmailByRoleID,
     createUser,
     updateUser,
     deleteUserByID,

@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const { authenticateToken, authenticateSupervisor, authenticateAdministrator } = require('./middleware/authenticator.js');
 const date_functions = require('./dates.js');
+const Bree = require('bree');
 
 // Setting express's view engine to process ejs vs standard HTML allowing dynamic templating
 app.set('view engine', 'ejs');
@@ -205,6 +206,26 @@ app.get('/logout', (req, res) => {
 app.get("/*", async (req, res) => {
     res.render("404");
 });
+
+// scheduling first notification email (Carrasco)
+const bree = new Bree({
+    jobs: [{
+        name: 'first_notification',
+        // interval: '30 seconds'
+        cron: '00 09 * * 1-5'
+    }]
+});
+bree.start();
+
+// scheduling second notification email (Carrasco)
+const bree2 = new Bree({
+    jobs: [{
+        name: 'second_notification',
+        // interval: '30 seconds',
+        cron: '15 9 * * 1-5'
+    }]
+});
+bree2.start();
 
 // Starts listening for incoming requests after everything (middleware, routes, settings) has been setup and defined
 app.listen(PORT, () => {
