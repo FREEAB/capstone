@@ -50,7 +50,7 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <% for (var i=0; i < 14; i++) { %>
+                    <% for (var i=0; i < 28; i++) { %>
                         <th id="day_<%=i%>_header">Day <%=i%>
                         </th>
                         <% } %>
@@ -62,7 +62,7 @@
                         <td>
                             <%= member.last_name %>
                         </td>
-                        <% for (var j=0; j < 14; j++) { %>
+                        <% for (var j=0; j < 28; j++) { %>
                             <td id="<%=member.id%>_day_<%=j%>" style="padding: 1px; width: 6.66%">
                                 <!-- select dropdown menu -->
                                 <select id="<%=member.id%>_day_<%=j%>_dropdown"
