@@ -80,18 +80,18 @@ async function sendEmail() {
             port: 587,
             secure: false,
             auth: {
-                user: 'ernest3443@hotmail.com', //REPLACE WITH YOUR EMAIL ADDRESS
-                pass: 'Nene3443' //REPLACE WITH YOUR EMAIL PASSWORD
+                user: 'kaeleamathimne@gmail.com', //REPLACE WITH YOUR EMAIL ADDRESS
+                pass: 'Vikkstar123' //REPLACE WITH YOUR EMAIL PASSWORD
             }
         }));
 
         //Email configuration
         const message = await transporter.sendMail({
-            from: "ernest3443@hotmail.com", //SENDER
+            from: "kaeleamathimne@gmail.com", //SENDER
             to: [`${supervisorEmail}`], //MULTIPLE RECEIVERS
             subject: "Hello", //EMAIL SUBJECT
-            text: `sergeant your troops haven't filled out there accountability tracker.`, //EMAIL BODY IN TEXT FORMAT
-            html: "<b>sergeant your troops haven't filled out there accountability tracker.</b>", //EMAIL BODY IN HTML FORMAT
+            text: `Sir/Ma'am ${member.name} haven't filled out there accountability tracker.`, //EMAIL BODY IN TEXT FORMAT
+            html: `<b>Sir/Ma'am ${member.name} haven't filled out there accountability tracker.</b>`, //EMAIL BODY IN HTML FORMAT
         })
         console.log('Message sent: ' + message.messageId)
         console.log(message.accepted)

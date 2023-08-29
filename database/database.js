@@ -3,13 +3,8 @@
 const Pool = require('pg').Pool;
 const passwordTools = require('../scripts/passwordTools');
 
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'capstone',
-    password: 'transfer25',
-    port: 5432,
-})
+
+
 pool.connect(function (err) {
     if (err) throw err;
     console.log("Database Connected!");

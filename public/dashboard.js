@@ -94,7 +94,7 @@ const colorMappings = {
 };
 
 // Loop through all days (1-14) on calendar to set proper headers and disable weekends
-for (let i = 0; i < 14; i++) {
+for (let i = 0; i < 28; i++) {
 
     // Grab all day_x_header elements and populate them with proper dates (x refers to day 0-14)
     let dateElement = document.querySelector("#day_" + String(i) + "_header");

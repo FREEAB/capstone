@@ -18,14 +18,14 @@ const local_pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'capstone',
-    password: 'capstone',
+    password: 'Vikkstar123',
     port: 5432,
 })
 
 //Function to run query and properly close connection afterwards
 async function runQuery(queryString) {
     try {
-        const dataConnection = await whs_pool.connect();
+        const dataConnection = await local_pool.connect();
         const results = await dataConnection.query(queryString);
         await dataConnection.release();
         return results;
