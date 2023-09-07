@@ -50,7 +50,7 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <% for (var i=0; i < 28; i++) { %>
+                    <% for (var i=-14; i < 28; i++) { %>
                         <th id="day_<%=i%>_header">Day <%=i%>
                         </th>
                         <% } %>
@@ -62,6 +62,19 @@
                         <td>
                             <%= member.last_name %>
                         </td>
+                        <% for (var k=-14; k < 0; k++) { %>
+                            <td id="<%=member.id%>_day_<%=k%>" style="padding: 1px; width: 6.66%">
+                                <select id="<%=member.id%>_day_<%=k%>_dropdown"
+                                    class="form-select historycolors day_<%=k%>" aria-label="Select">
+                                    <option value="0" selected></option>
+                                    <option value="1">O1</option>
+                                    <option value="2">O2</option>
+                                    <option value="3">Remote</option>
+                                    <option value="4">Leave</option>
+                                    <option value="5">Sick</option>
+                                    <option value="6">Holiday</option>
+                            </td>
+                            <% } %>
                         <% for (var j=0; j < 28; j++) { %>
                             <td id="<%=member.id%>_day_<%=j%>" style="padding: 1px; width: 6.66%">
                                 <!-- select dropdown menu -->
@@ -77,7 +90,7 @@
                             </td>
                             <% } %>
                     </tr>
-                    <% } %>
+                    <% } %> 
             </thead>
         </table>
     </div>

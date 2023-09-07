@@ -29,7 +29,7 @@ function duplicateSelect(event) {
     });
     document.querySelectorAll(".form-select").forEach((select) => {
         select.querySelectorAll("option").forEach((option, index) => {
-            if (index === 0 || selectedIndices.includes(index)) {
+            if (selectedIndices.includes(index)) {
                 option.disabled = true;
             } else {
                 option.disabled = false;

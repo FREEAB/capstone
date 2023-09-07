@@ -71,17 +71,43 @@ async function sendEmail() {
         for (member of supervisorArray) {
             supervisorEmail.push(member.email)
         }
+        
+        const troop = []
 
+        for (member of id) {
+            const getTroop = await supervisesDatabase.getTroopBySupervisorID(member)
+            const getID = getTroop[0]
+            troop.push(getID)
+        }
+        const troopfilter = troop.filter(item => !!item);
 
+        const trooplist = []
+        for (member of troopfilter) {
+            trooplist.push(member.troop_id)
+        }
+
+        const troopID = [...new Set(trooplist)];
+
+        const troopName = []
+        for (member of troopID) {
+            const getName = await userDatabase.getUserLastNameByID(member)
+            troopName.push(getName)
+        };
+
+        const troopLastName = []
+        for (member of troopName) {
+            troopLastName.push(member.last_name)
+        }
         //Transporter configuration
         let transporter = nodeMailer.createTransport(smtpTransport({
-            name: 'smtp.office365.com',
-            host: 'smtp.office365.com',
-            port: 587,
-            secure: false,
+            name: 'smtp.gmail.com',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            service: 'gmail',
             auth: {
                 user: 'kaeleamathimne@gmail.com', //REPLACE WITH YOUR EMAIL ADDRESS
-                pass: 'Vikkstar123' //REPLACE WITH YOUR EMAIL PASSWORD
+                pass: 'nxketiaendhjpael' //REPLACE WITH YOUR EMAIL PASSWORD
             }
         }));
 
@@ -90,8 +116,8 @@ async function sendEmail() {
             from: "kaeleamathimne@gmail.com", //SENDER
             to: [`${supervisorEmail}`], //MULTIPLE RECEIVERS
             subject: "Hello", //EMAIL SUBJECT
-            text: `Sir/Ma'am ${member.name} haven't filled out there accountability tracker.`, //EMAIL BODY IN TEXT FORMAT
-            html: `<b>Sir/Ma'am ${member.name} haven't filled out there accountability tracker.</b>`, //EMAIL BODY IN HTML FORMAT
+            text: `Sir/Ma'am ${troopLastName.join(", ")} haven't filled out their accountability tracker.`, //EMAIL BODY IN TEXT FORMAT
+            html: `<b>Sir/Ma'am ${troopLastName.join(", ")} haven't filled out their accountability tracker.</b>`, //EMAIL BODY IN HTML FORMAT
         })
         console.log('Message sent: ' + message.messageId)
         console.log(message.accepted)

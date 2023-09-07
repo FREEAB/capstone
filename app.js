@@ -63,7 +63,7 @@ app.get("/dashboard", authenticateToken, async (req, res) => {
 
     // Getting start and end date to pass into schedule query
     const start_date = date_functions.addDays(today, offset);
-    const end_date = date_functions.addDays(start_date, 14);
+    const end_date = date_functions.addDays(start_date, 28);
 
     schedule_data = await scheduleDatabase.getScheduleBetweenDates(start_date, end_date);
     res.render("dashboard", { members: user_data, schedule: schedule_data });
@@ -155,7 +155,7 @@ app.get("/api/schedule", authenticateToken, async (req, res) => {
     let today = new Date();
     let offset = -today.getDay();
     let start_date = date_functions.addDays(today, offset);
-    let end_date = date_functions.addDays(start_date, 14);
+    let end_date = date_functions.addDays(start_date, 28);
     scheduleData = await scheduleDatabase.getScheduleBetweenDates(start_date, end_date);
     res.json(scheduleData);
 });
@@ -223,7 +223,7 @@ const bree2 = new Bree({
     jobs: [{
         name: 'second_notification',
         // interval: '30 seconds',
-        cron: '15 9 * * 1-5'
+        cron: '15 09 * * 1-5'
     }]
 });
 bree2.start();

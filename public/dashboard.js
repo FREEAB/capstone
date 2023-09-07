@@ -108,13 +108,38 @@ for (let i = 0; i < 28; i++) {
 
     // Disable & gray out dropdowns if day of week is 0 (Sun) or 6 (Sat)
     let newDateDay = newDate.getDay();
-    if (newDateDay == 0 || newDateDay == 6) {
+    if (newDateDay == 0 || newDateDay == 6){
         let weekendElements = document.querySelectorAll(".day_" + String(i));
         weekendElements.forEach(element => {
             element.setAttribute("disabled", true); // Disable dropdown
-            element.style.backgroundColor = "#d7d7d7"; // Set it to gray
+            element.style.backgroundColor = "#d7d7d7"; // Set it t`o gray
         })
     }
+}
+for (let i = -14; i <= -1; i++) {
+    let dateElement = document.querySelector("#day_" + String(i) + "_header");
+
+    let newDate = addDays(dateObj, i + offset)
+
+    dateElement.innerHTML = getFullDate(newDate)
+    dayMappings[i] = getNumericDate(newDate)
+
+    let newDateDay = newDate.getDay();
+    if (newDateDay == 0 || newDateDay == 6){
+        let weekendElements = document.querySelectorAll(".day_" + String(i));
+        weekendElements.forEach(element => {
+            element.setAttribute("disabled", true); // Disable dropdown
+            element.style.backgroundColor = "#d7d7d7"; // Set it t`o gray
+        })
+    }
+    else {
+        historyElements = document.querySelectorAll(".historycolors option");
+        for (const element of historyElements){
+            //element.setAttribute("disabled", true)
+            element.style.backgroundColor = "#b3b3b3";
+        }
+    }
+    
 }
 
 // Retrieves Schedule data from database and then populates all appropriate dropdowns
@@ -125,7 +150,7 @@ getScheduleData()
     });
 
 // Loop through every dropdown
-const dropdowns = document.querySelectorAll('.dropcolors');
+const dropdowns = document.querySelectorAll('.dropcolors, .historycolors');
 dropdowns.forEach((dropdown) => {
 
     // Converts dropdown IDs from 'X_dropdown_Y' to 'dropdown_X_YYYY-MM-DD
@@ -168,3 +193,4 @@ dropdowns.forEach((dropdown) => {
     });
 });
 /* End of Bamieh's code */
+
