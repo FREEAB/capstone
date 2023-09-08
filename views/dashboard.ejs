@@ -62,10 +62,11 @@
                         <td>
                             <%= member.last_name %>
                         </td>
-                        <% for (var k=-14; k < 0; k++) { %>
-                            <td id="<%=member.id%>_day_<%=k%>" style="padding: 1px; width: 6.66%">
-                                <select id="<%=member.id%>_day_<%=k%>_dropdown"
-                                    class="form-select historycolors day_<%=k%>" aria-label="Select">
+                        <% for (var j=-14; j < 0; j++) { %>
+                            <td id="<%=member.id%>_day_<%=j%>" style="padding: 1px; width: 6.66%">
+                                <!-- select dropdown menu -->
+                                <select id="<%=member.id%>_day_<%=j%>_dropdown"
+                                    class="form-select historycolors day_<%=j%>" aria-label="Select">
                                     <option value="0" selected></option>
                                     <option value="1">O1</option>
                                     <option value="2">O2</option>

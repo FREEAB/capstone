@@ -66,7 +66,7 @@ async function getScheduleData() {
 function populateScheduleData(scheduleData) {
     scheduleData.forEach((entry) => {
         const entry_id = entry.user_id;
-        const entry_date = entry.date.substring(0, 10);
+        const entry_date = entry.date.substring(0,10);
         // const entry_day = dayMappings[entry_date];
         const entry_location = entry.location_id;
         element = document.querySelector(`#dropdown_${entry_id}_${entry_date}`);
@@ -135,8 +135,7 @@ for (let i = -14; i <= -1; i++) {
     else {
         historyElements = document.querySelectorAll(".historycolors option");
         for (const element of historyElements){
-            //element.setAttribute("disabled", true)
-            element.style.backgroundColor = "#b3b3b3";
+            element.setAttribute("disabled", true)
         }
     }
     

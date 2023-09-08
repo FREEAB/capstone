@@ -59,7 +59,7 @@ app.get("/dashboard", authenticateToken, async (req, res) => {
 
     // Get dates for most recent sunday to 2 weeks after
     const today = new Date();
-    const offset = -today.getDay();
+    const offset = today.getDay();
 
     // Getting start and end date to pass into schedule query
     const start_date = date_functions.addDays(today, offset);
@@ -154,9 +154,10 @@ app.get("/api/schedule", authenticateToken, async (req, res) => {
     // Will return 2 weeks of schedule data backdated to most recent Sunday
     let today = new Date();
     let offset = -today.getDay();
-    let start_date = date_functions.addDays(today, offset);
+    let start_date = date_functions.addDays(today, offset-14);
     let end_date = date_functions.addDays(start_date, 28);
     scheduleData = await scheduleDatabase.getScheduleBetweenDates(start_date, end_date);
+    console.log(scheduleData);
     res.json(scheduleData);
 });
 
