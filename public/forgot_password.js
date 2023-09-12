@@ -1,7 +1,3 @@
-const { get } = require("jquery");
-
-
-
 var password=document.getElementById("password");
 
  function genPassword() {
@@ -13,7 +9,34 @@ var password=document.getElementById("password");
    password += chars.substring(randomNumber, randomNumber +1);
   }
 }
+const forgotForm = document.getElementById('forgot_password')
 
+forgotForm.addEventListener('submit', async (event) => {
+
+    event.preventDefault()
+
+    const email = forgotForm.elements['email'].value;
+
+    try {
+        const response = await fetch('/forgot_password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email })
+        })
+
+        if(response.ok) {
+            sendEmail()
+            alert("Email sent")
+            window.location.href = '/'
+        } else {
+            alert("Invalid email. Please try again")
+        }
+    } catch (error) {
+        console.error("There was an error sending reset request: ", error)
+    }
+})
 async function sendEmail() {
     
     // returns  all users from data base and adds their ids in an array 

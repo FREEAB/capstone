@@ -51,6 +51,9 @@ function removeHashedPassword(userData) {
 app.get("/", async (req, res) => {
     res.render("login");
 });
+app.get("/forgot_password", async (req, res) => {
+    res.render("forgot_password")
+})
 
 // Defining protected route for dashboard
 app.get("/dashboard", authenticateToken, async (req, res) => {
@@ -92,6 +95,7 @@ app.get("/settings", authenticateSupervisor, async (req, res) => {
     res.render("settings", { troops: troops, members: user_data });
 });
 
+
 // Defining route to validate login attempt
 app.post('/login', async (req, res) => {
     try {
@@ -125,6 +129,20 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
+app.post('/forgot_password', async (req, res) => {
+    try {
+        const { email } = req.body
+        const user = await userDatabase.getUserByEmail(email)
+        if (user) {
+            return res.status(200).json({ message: "Email Sent."})
+        } else {
+            res.status(401).json({ message: "Invalid Email" })
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+})
 
 //Handling registering attempts (Carrasco)
 app.post("/create", authenticateAdministrator, async (req, res) => {
