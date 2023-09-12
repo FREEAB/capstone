@@ -34,14 +34,3 @@ loginForm.addEventListener('submit', async (event) => {
         console.error("There was an error sending login request: ", error);
     };
 });
-loginForm.addEventListener('button', async (event) => {
-
-    event.preventDefault();
-
-    try{
-        window.location.href = '/forgot_password'
-    } catch (error) {
-        console.error("There was an error sending request: ", error)
-    }
-})
-/* End of Bamieh's Code */
