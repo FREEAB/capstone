@@ -157,7 +157,6 @@ app.get("/api/schedule", authenticateToken, async (req, res) => {
     let start_date = date_functions.addDays(today, offset-14);
     let end_date = date_functions.addDays(start_date, 28);
     scheduleData = await scheduleDatabase.getScheduleBetweenDates(start_date, end_date);
-    console.log(scheduleData);
     res.json(scheduleData);
 });
 
