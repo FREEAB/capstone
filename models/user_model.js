@@ -2,6 +2,7 @@
 
 // Importing modules
 const bcrypt = require('bcrypt');
+const { Pool } = require('pg');
 const { runQuery } = require('./pool.js');
 
 // Defining constants
@@ -193,6 +194,16 @@ async function deleteUserByEmail(email) {
     }
 }
 
+async function resetPassword(id) {
+    try {
+        const newPassword = await bcrypt.hash("1234", saltRounds)
+        const results = await Pool.query('UPDATE user_data SET hashed_password = $1 WHERE id = $2', [newPassword, id])
+        return results;
+    } catch (error) {
+        throw error
+    }
+}
+
 // Export functions above
 module.exports = {
     getUsers,
@@ -205,7 +216,8 @@ module.exports = {
     createUser,
     updateUser,
     deleteUserByID,
-    deleteUserByEmail
+    deleteUserByEmail,
+    resetPassword
 };
 
 /* End of Bamieh's Code */
