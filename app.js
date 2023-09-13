@@ -12,7 +12,7 @@ const bcrypt = require('bcrypt');
 const { authenticateToken, authenticateSupervisor, authenticateAdministrator } = require('./middleware/authenticator.js');
 const date_functions = require('./dates.js');
 const Bree = require('bree');
-
+const saltRounds = 10
 // Setting express's view engine to process ejs vs standard HTML allowing dynamic templating
 app.set('view engine', 'ejs');
 
@@ -20,8 +20,7 @@ app.set('view engine', 'ejs');
 const userDatabase = require('./models/user_model.js');
 const scheduleDatabase = require('./models/schedule_model.js');
 const supervisesDatabase = require('./models/supervises_model.js');
-const { sendEmail } = require('./jobs/email_password_reset.js');
-const { resetPassword } = require('./database/database.js');
+const { sendPasswordEmail } = require('./jobs/email_password_reset.js');
 
 // Setting constant for port, need to use process.env.port or 3000 for WHS purposes
 const PORT = process.env.port || 3000;
@@ -134,12 +133,13 @@ app.post('/login', async (req, res) => {
 
 app.post('/forgot_password', async (req, res) => {
     try {
+        
         const { email } = req.body
         const user = await userDatabase.getUserByEmail(email)
         if (user) {
-            resetPassword
-            //userDatabase.updateUser(password = "1234")
-            //sendEmail()
+            let newPassword = userDatabase.genPassword()
+            userDatabase.resetPassword(user.id, newPassword)
+            sendPasswordEmail(user.id, newPassword)
             return res.status(200).json({ message: "Email Sent."})
         } else {
             res.status(401).json({ message: "Invalid Email" })

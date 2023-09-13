@@ -4,25 +4,12 @@ const smtpTransport = require('nodemailer-smtp-transport');
 const userDatabase = require('../models/user_model.js');
 
 
-async function sendEmail() {
+async function sendPasswordEmail(id, password) {
     
     // returns  all users from data base and adds their ids in an array 
-    const users = await userDatabase.getUsers()
-    const userIDList = []
-    for (member of users) {
-        userIDList.push(member.id)
-    }
-    const memberArray = []
-    for (member of userIDList){
-        const getEmail = await userDatabase.getUserEmailByID(member)
-        memberArray.push(getEmail)
-    }
-    const memberEmail = []
-    for (member of memberArray) {
-        memberEmail.push(member.email)
-    }
+    
+    const user = await userDatabase.getUserByID(id)
 
-    let password = "1234"
     
         //Transporter configuration
         let transporter = nodeMailer.createTransport(smtpTransport({
@@ -40,7 +27,7 @@ async function sendEmail() {
         //Email configuration
         const message = await transporter.sendMail({
             from: "kaeleamathimne@gmail.com", //SENDER
-            to: [`${memberEmail}`], //MULTIPLE RECEIVERS
+            to: `${user.email}`, //MULTIPLE RECEIVERS
             subject: "Password Reset", //EMAIL SUBJECT
             text: `Sir/Ma'am here is your generated reset password. ${password}`, //EMAIL BODY IN TEXT FORMAT
             html: `<b>Sir/Ma'am here is your generated reset password. ${password}</b>`, //EMAIL BODY IN HTML FORMAT
@@ -51,8 +38,8 @@ async function sendEmail() {
         return;
     }
 
-sendEmail().catch(err => console.log(err));
+//sendEmail().catch(err => console.log(err));
 
 module.exports = {
-    sendEmail
+    sendPasswordEmail
 }

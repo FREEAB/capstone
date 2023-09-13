@@ -159,7 +159,6 @@ async function updateUser(id, email = null, password = null, first_name = null, 
         } else {
             const hashed_password = user.hashed_password;
         }
-
         // Update all the values with the values we got
         const results = await runQuery(`UPDATE user_data SET email = ${email}, hashed_password = ${hashed_password}, first_name = ${first_name}, last_name = ${last_name}, role = ${role} WHERE id = ${id};`);
         return results;
@@ -194,15 +193,27 @@ async function deleteUserByEmail(email) {
     }
 }
 
-async function resetPassword(id) {
+async function resetPassword(id, password) {
     try {
-        const newPassword = await bcrypt.hash("1234", saltRounds)
-        const results = await Pool.query('UPDATE user_data SET hashed_password = $1 WHERE id = $2', [newPassword, id])
+        var newPassword = await bcrypt.hash(password, saltRounds)
+        var results = await runQuery(`UPDATE user_data SET hashed_password = '${newPassword}' WHERE id = ${id}`)
         return results;
     } catch (error) {
         throw error
     }
 }
+
+
+function genPassword() {
+    var chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var passwordLength = 12;
+    var password = "";
+    for (var i = 0; i <= passwordLength; i++) {
+    var randomNumber = Math.floor(Math.random() * chars.length);
+    password += chars.substring(randomNumber, randomNumber +1);
+    }return password
+}
+
 
 // Export functions above
 module.exports = {
@@ -217,7 +228,8 @@ module.exports = {
     updateUser,
     deleteUserByID,
     deleteUserByEmail,
-    resetPassword
+    resetPassword,
+    genPassword
 };
 
 /* End of Bamieh's Code */
