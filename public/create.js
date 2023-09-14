@@ -5,7 +5,7 @@ const createForm = document.querySelector('#create_form');
 
 // Creating event listener for create_form submission
 createForm.addEventListener('submit', async (event) => {
-
+    
     // Prevent default form submission behavior
     event.preventDefault();
 

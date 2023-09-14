@@ -1,8 +1,3 @@
-//var password=document.getElementById("password");
-
-
-//const resetToken = crypto.randomBytes(32).toString("hex")
-//const hash = await bcrypt.hash(resetToken, Number(bcryptSalt))
 
 const forgotForm = document.getElementById('forgot_password')
 
